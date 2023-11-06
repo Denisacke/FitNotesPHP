@@ -1,0 +1,12 @@
+<html lang="en">
+    <span>Here is your lucky number {{ number }}</span>
+    <form action="/submit-exercise" method="post">
+        <label for="exercise">Choose an exercise:</label>
+        <select id="exercise" name="exercise">
+            {% for exercise in exercises %}
+                <option value="{{ exercise.getName() }}">{{ exercise.getName() }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Submit">
+    </form>
+</html>

@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TEST!{% endblock %}
+
+{% block body %}
+    <div class="flex flex-row fixed top-0 bottom-0 space-x-4">
+        {% include 'fragments/sidebar.html.twig' %} <!-- Including the sidebar content -->
+        {% include rightContent %} <!-- Including the content to the right -->
+    </div>
+{% endblock %}

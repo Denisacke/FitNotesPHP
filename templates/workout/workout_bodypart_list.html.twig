@@ -1,0 +1,11 @@
+<html lang="en">
+    <form action="/find-exercises-bodypart" method="post">
+        <label for="bodyPart">Choose an exercise:</label>
+        <select id="bodyPart" name="bodyPart">
+            {% for bodyPart in bodyParts %}
+                <option value="{{ bodyPart }}">{{ bodyPart }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Submit">
+    </form>
+</html>
