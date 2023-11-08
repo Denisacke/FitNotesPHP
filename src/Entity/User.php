@@ -5,11 +5,12 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -37,20 +38,21 @@ class User implements UserInterface
     #[ORM\Column]
     private int $activityLevel;
 
+    #[ORM\Column(type: "json")]
+    private array $roles = ['ROLE_USER'];
+
     /**
      * @param string|null $name
      * @param string|null $email
-     * @param string|null $password
      * @param int|null $height
      * @param int $weight
      * @param int $age
      * @param int $activityLevel
      */
-    public function __construct(?string $name, ?string $email, ?string $password, ?int $height, int $weight, int $age, int $activityLevel)
+    public function __construct(?string $name, ?string $email, ?int $height, int $weight, int $age, int $activityLevel)
     {
         $this->name = $name;
         $this->email = $email;
-        $this->password = $password;
         $this->height = $height;
         $this->weight = $weight;
         $this->age = $age;
@@ -112,7 +114,7 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getUsername(): ?string
     {
         return $this->name;
     }
@@ -162,7 +164,11 @@ class User implements UserInterface
 
     public function getRoles(): array
     {
-        return [];
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
     public function eraseCredentials()
@@ -172,6 +178,6 @@ class User implements UserInterface
 
     public function getUserIdentifier(): string
     {
-        return $this->email;
+        return $this->name;
     }
 }
