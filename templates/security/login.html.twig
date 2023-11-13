@@ -11,8 +11,8 @@
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
 
-            <label for="inputName">Name</label>
-            <input type="text" value="{{ last_username }}" name="name" id="inputName" required autofocus>
+            <label for="inputName">Username</label>
+            <input type="text" value="{{ last_username }}" name="username" id="inputName" required autofocus>
 
             <label for="inputPassword">Password</label>
             <input type="password" name="password" id="inputPassword" required>

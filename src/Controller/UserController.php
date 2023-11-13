@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\AuthenticationUser;
 use App\Entity\User;
 use App\Service\UserService;
 use Psr\Log\LoggerInterface;
@@ -33,7 +34,7 @@ class UserController extends AbstractController
 
     #[Route(path: '/usersave/test', name: 'user_test')]
     public function test(UserPasswordHasherInterface $passwordHasher, LoggerInterface $logger): Response{
-        $user1 = new User('Test', 'test@gmail.com', 175, 60, 23, 1);
+        $user1 = new AuthenticationUser('Test', 'test@gmail.com', 175, 60, 23, 1);
         $hashedPassword1 = $passwordHasher->hashPassword(
             $user1,
             'testing'
@@ -41,7 +42,7 @@ class UserController extends AbstractController
 
         $user1->setPassword($hashedPassword1);
 
-        $user2 = new User('Test2', 'test@gmail.com', 175, 55, 23, 5);
+        $user2 = new AuthenticationUser('Test2', 'test@gmail.com', 175, 55, 23, 5);
         $hashedPassword2 = $passwordHasher->hashPassword(
             $user2,
             'testing'
@@ -56,7 +57,7 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/home', name: 'home_page')]
-    public function renderDashboard(TokenStorageInterface $tokenStorage, Security $security): Response{
-        return $this->render('test.html.twig', ['rightContent' => 'user/home.html.twig']);
+    public function renderDashboard(Security $security): Response{
+        return $this->render('test.html.twig', ['rightContent' => 'user/home.html.twig', 'user' => $security->getUser()]);
     }
 }

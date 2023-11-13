@@ -2,22 +2,23 @@
 
 namespace App\Service;
 
+use App\Entity\AuthenticationUser;
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Repository\AuthenticationUserRepository;
 
 class UserService
 {
-    private UserRepository $userRepository;
+    private AuthenticationUserRepository $userRepository;
 
     /**
-     * @param UserRepository $userRepository
+     * @param AuthenticationUserRepository $userRepository
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(AuthenticationUserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }
 
-    public function saveUser(User $user): User
+    public function saveUser(AuthenticationUser $user): AuthenticationUser
     {
         $this->userRepository->save($user);
 
@@ -25,13 +26,13 @@ class UserService
     }
 
     /**
-     * @return User[]
+     * @return AuthenticationUser[]
      */
     public function findAllUsers(): array {
         return $this->userRepository->findAll();
     }
 
-    public function findUserById(int $id): User
+    public function findUserById(int $id): AuthenticationUser
     {
         return $this->userRepository->findById($id);
     }
