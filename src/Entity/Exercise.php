@@ -37,6 +37,9 @@ class Exercise
     #[ORM\Column(nullable: true)]
     private ?int $caloriesBurned = null;
 
+    #[ORM\ManyToMany(targetEntity: Workout::class, mappedBy: "exercises")]
+    private array $workouts;
+
     /**
      * @return string
      */
@@ -176,4 +179,16 @@ class Exercise
 
         return $this;
     }
+
+    public function getWorkouts(): array
+    {
+        return $this->workouts;
+    }
+
+    public function setWorkouts(array $workouts): void
+    {
+        $this->workouts = $workouts;
+    }
+
+
 }

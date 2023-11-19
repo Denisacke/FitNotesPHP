@@ -1,5 +1,5 @@
 <html lang="en">
-        {% block javascripts %}
+{% block javascripts %}
         <script type="text/javascript">
                 let selectedExercises = [];
                 function addExerciseToWorkout(exerciseName) {
@@ -21,9 +21,10 @@
                         return selectedExercises.some(selectedExercise => selectedExercise === exerciseName);
                 }
         </script>
-        {% endblock %}
+{% endblock %}
+<div class="relative">
         {% block body %}
-                <div class="flex flex-col">
+                <div class="flex flex-col overflow-y-scroll workout-list">
                         <div class="flex flex-row flex-wrap">
                                 {% for exercise in exercises %}
                                         <div class="flex flex-col ml-3 w-56 h-auto items-center justify-center border shadow">
@@ -49,9 +50,15 @@
 
                                 {% endfor %}
                         </div>
-                        <div class="flex mt-auto ml-auto mb-20 mr-10">
-                                <button class="cursor-pointer border bg-blue-500 mt-auto mb-2 shadow"> <span class="font-medium"> Submit workout </span></button>
-                        </div>
                 </div>
         {% endblock %}
+        <div class="fixed bottom-3 right-20">
+                <button class="flex cursor-pointer border bg-blue-500 shadow"> <span class="font-medium"> Submit workout </span></button>
+        </div>
+</div>
 </html>
+<style>
+        .workout-list {
+                max-height: calc(100vh - 20px);
+        }
+</style>

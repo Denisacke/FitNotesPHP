@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: WorkoutRepository::class)]
+#[ORM\Table(name: '`workout`')]
 class Workout
 {
     #[ORM\Id]
@@ -14,8 +15,15 @@ class Workout
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $exercises = [];
+    #[ORM\ManyToMany(targetEntity: Exercise::class, inversedBy: "workouts")]
+    #[ORM\JoinTable(name: "workout_exercise")]
+    private array $exercises;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=AuthenticationUser::class)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private ?AuthenticationUser $user;
 
     public function getId(): ?int
     {

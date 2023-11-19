@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: AuthenticationUserRepository::class)]
-#[ORM\Table(name: '`user`')]
+#[ORM\Table(name: '`client`')]
 class AuthenticationUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -40,23 +40,10 @@ class AuthenticationUser implements UserInterface, PasswordAuthenticatedUserInte
     #[ORM\Column]
     private int $activityLevel;
 
-    /**
-     * @param string|null $username
-     * @param string|null $email
-     * @param int|null $height
-     * @param int $weight
-     * @param int $age
-     * @param int $activityLevel
-     */
-    public function __construct(?string $username, ?string $email, ?int $height, int $weight, int $age, int $activityLevel)
+    public function __construct()
     {
-        $this->username = $username;
-        $this->email = $email;
-        $this->height = $height;
-        $this->weight = $weight;
-        $this->age = $age;
-        $this->activityLevel = $activityLevel;
     }
+
 
     /**
      * @return int|null

@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\AuthenticationUser;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -38,6 +37,14 @@ class AuthenticationUserRepository extends ServiceEntityRepository implements Pa
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    public function save(AuthenticationUser $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
     public function findById($id): AuthenticationUser {

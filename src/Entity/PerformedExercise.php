@@ -6,8 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="performed_exercises")
+ * @ORM\Table(name="performed_exercise")
  */
+#[ORM\Table(name: '`performed_exercise`')]
 class PerformedExercise
 {
     /**
@@ -18,10 +19,10 @@ class PerformedExercise
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Client")
-     * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="AuthenticatedUser")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private User $client;
+    private User $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="Exercise")
@@ -68,9 +69,9 @@ class PerformedExercise
     /**
      * @return mixed
      */
-    public function getClient()
+    public function getUser()
     {
-        return $this->client;
+        return $this->user;
     }
 
     /**
@@ -90,11 +91,11 @@ class PerformedExercise
     }
 
     /**
-     * @param mixed $client
+     * @param mixed $user
      */
-    public function setClient($client): void
+    public function setUser($user): void
     {
-        $this->client = $client;
+        $this->user = $user;
     }
 
     /**
