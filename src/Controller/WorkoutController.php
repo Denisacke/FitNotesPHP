@@ -3,7 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\DTO\BodyPartExerciseDTO;
+use App\Entity\Workout;
+use App\Repository\ExerciseRepository;
+use App\Repository\WorkoutRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
+use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,12 +19,16 @@ class WorkoutController extends AbstractController
 {
     private array $bodyParts = ["back", "cardio", "chest", "lower arms", "lower legs", "neck", "shoulders", "upper arms", "upper legs", "waist"];
     private Client $client;
+    private WorkoutRepository $workoutRepository;
+    private ExerciseRepository $exerciseRepository;
 
-    public function __construct()
+    public function __construct(WorkoutRepository $workoutRepository, ExerciseRepository $exerciseRepository)
     {
         $this->client = new Client([
             'verify' => false
         ]);
+        $this->workoutRepository = $workoutRepository;
+        $this->exerciseRepository = $exerciseRepository;
     }
 
     #[Route(path: '/workout', name: 'workout_page')]
@@ -54,5 +63,28 @@ class WorkoutController extends AbstractController
             $exercises[] = $exerciseDTO;
         }
         return $this->render('test.html.twig', ['rightContent' => 'workout/workout_list.html.twig', 'exercises' => $exercises]);
+    }
+
+    #[NoReturn] #[Route(path: '/save-workout', name: 'save_workout', methods: "POST")]
+    public function saveWorkout(Request $request, LoggerInterface $logger): void{
+        $selectedExercises = $request->request->all()['selected_exercises'];
+        $workout = new Workout();
+        $exerciseCollection = new ArrayCollection();
+        foreach ($selectedExercises as $exerciseName) {
+            $exercise = $this->exerciseRepository->findOneBy(['name' => $exerciseName]);
+
+            // Check if exercise with the given name was found
+            if ($exercise) {
+                $exerciseCollection->add($exercise);
+            } else {
+                $logger->error("Exercise not found!");
+                // Handle the case where the exercise with the given name was not found
+                // You might want to log an error or handle it based on your application's logic
+            }
+        }
+        $workout->setExercises($exerciseCollection);
+
+        dd($workout);
+        $this->workoutRepository->save($workout);
     }
 }

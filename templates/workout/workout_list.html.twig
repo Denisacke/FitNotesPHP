@@ -9,11 +9,15 @@
                         const deleteButton = document.getElementById('delete-' + exerciseName);
                         deleteButton.hidden = false;
 
+                        document.getElementById('selected-' + exerciseName).value = exerciseName;
+
                         selectedExercises.push(exerciseName);
                         console.log(exerciseName);
                 }
 
                 function removeExerciseFromWorkout(exerciseName) {
+                        document.getElementById('selected-' + exerciseName).value = '';
+
                         selectedExercises = selectedExercises.slice(selectedExercises.findIndex(exercise => exercise.name === exerciseName), 1);
                 }
 
@@ -22,40 +26,47 @@
                 }
         </script>
 {% endblock %}
-<div class="relative">
-        {% block body %}
-                <div class="flex flex-col overflow-y-scroll workout-list">
-                        <div class="flex flex-row flex-wrap">
-                                {% for exercise in exercises %}
-                                        <div class="flex flex-col ml-3 w-56 h-auto items-center justify-center border shadow">
-                                                <img src="{{ exercise.getGifUrl() }}" alt="Exercise GIF">
-                                                <div class="flex flex-row w-full px-2 justify-between">
-                                                        <span class="font-medium"> Name: </span>
-                                                        <span> {{ exercise.getName() }} </span>
-                                                </div>
-                                                <div class="flex flex-row w-full px-2 justify-between">
-                                                        <span class="font-medium"> Target: </span>
-                                                        <span> {{ exercise.getTarget() }} </span>
-                                                </div>
-                                                <span class="w-full font-medium"> Secondary muscles </span>
-                                                {% for muscle in exercise.getSecondaryMuscles() %}
-                                                        <div class="flex flex-row w-full px-2 justify-between">
-                                                                <span class="font-medium"> Muscle name: </span>
-                                                                <span> {{ muscle }} </span>
-                                                        </div>
-                                                {% endfor %}
-                                                <button id="{{ exercise.name }}" onclick="addExerciseToWorkout('{{ exercise.name }}')" class="cursor-pointer bg-blue-500 border mt-auto mb-2 shadow"> <span class="font-medium"> Add to workout </span></button>
-                                                <button id="delete-{{ exercise.name }}" onclick="removeExerciseFromWorkout('{{ exercise.name }}')" class="cursor-pointer bg-red-500 border mt-auto mb-2 shadow" hidden> <span class="font-medium"> Remove exercise </span></button>
-                                        </div>
+        <form action="/save-workout" method="post">
+                <div class="relative">
+                        {% block body %}
+                                <div class="flex flex-col overflow-y-scroll workout-list">
+                                        <div class="flex flex-row flex-wrap">
+                                                {% for exercise in exercises %}
+                                                        <div class="flex flex-col ml-3 w-56 h-auto items-center justify-center border shadow">
+                                                                <img src="{{ exercise.getGifUrl() }}" alt="Exercise GIF">
+                                                                <div class="flex flex-row w-full px-2 justify-between">
+                                                                        <span class="font-medium"> Name: </span>
+                                                                        <span> {{ exercise.getName() }} </span>
+                                                                </div>
+                                                                <div class="flex flex-row w-full px-2 justify-between">
+                                                                        <span class="font-medium"> Target: </span>
+                                                                        <span> {{ exercise.getTarget() }} </span>
+                                                                </div>
+                                                                <span class="w-full font-medium"> Secondary muscles </span>
+                                                                {% for muscle in exercise.getSecondaryMuscles() %}
+                                                                        <div class="flex flex-row w-full px-2 justify-between">
+                                                                                <span class="font-medium"> Muscle name: </span>
+                                                                                <span> {{ muscle }} </span>
+                                                                        </div>
+                                                                {% endfor %}
+                                                                <input type="hidden" name="selected_exercises[]" id="selected-{{ exercise.name }}">
 
-                                {% endfor %}
+                                                                <button id="{{ exercise.name }}" onclick="addExerciseToWorkout('{{ exercise.name }}')" type="button" class="cursor-pointer bg-blue-500 border mt-auto mb-2 shadow"> <span class="font-medium"> Add to workout </span></button>
+                                                                <button id="delete-{{ exercise.name }}" onclick="removeExerciseFromWorkout('{{ exercise.name }}')" type="button" class="cursor-pointer bg-red-500 border mt-auto mb-2 shadow" hidden> <span class="font-medium"> Remove exercise </span></button>
+                                                        </div>
+
+                                                {% endfor %}
+                                        </div>
+                                        <div class="flex mt-auto ml-auto mb-20 mr-10">
+                                                <button class="cursor-pointer border bg-blue-500 mt-auto mb-2 shadow"> <span class="font-medium"> Submit workout </span></button>
+                                        </div>
+                                </div>
+                        {% endblock %}
+                        <div class="fixed bottom-3 right-20">
+                                <button type="submit" class="flex cursor-pointer border bg-blue-500 shadow"> <span class="font-medium"> Submit workout </span></button>
                         </div>
                 </div>
-        {% endblock %}
-        <div class="fixed bottom-3 right-20">
-                <button class="flex cursor-pointer border bg-blue-500 shadow"> <span class="font-medium"> Submit workout </span></button>
-        </div>
-</div>
+        </form>
 </html>
 <style>
         .workout-list {
