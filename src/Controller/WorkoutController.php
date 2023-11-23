@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\DTO\BodyPartExerciseDTO;
+use App\Entity\DTO\ExerciseMapper;
 use App\Entity\Workout;
+use App\Form\WorkoutType;
 use App\Repository\ExerciseRepository;
 use App\Repository\WorkoutRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -58,14 +60,32 @@ class WorkoutController extends AbstractController
             $exerciseDTO->setName($item['name']);
             $exerciseDTO->setTarget($item['target']);
             $exerciseDTO->setSecondaryMuscles($item['secondaryMuscles']);
+            $exerciseDTO->setEquipment($item['equipment']);
+            $exerciseDTO->setInstructions($item['instructions']);
             $exerciseDTO->setGifUrl($item['gifUrl']);
-            // Push the created DTO object to the array
+
+//            $this->exerciseRepository->save(ExerciseMapper::mapFromExerciseDTOToExercise($exerciseDTO));
             $exercises[] = $exerciseDTO;
         }
-        return $this->render('test.html.twig', ['rightContent' => 'workout/workout_list.html.twig', 'exercises' => $exercises]);
+
+        $workout = new Workout();
+        $form = $this->createForm(WorkoutType::class, $workout);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            return $this->redirectToRoute('home_page');
+        }
+
+        return $this->render('test.html.twig', [
+            'rightContent' => 'workout/workout_list.html.twig',
+            'form' => $form->createView(),
+            'exercises' => $exercises
+        ]);
     }
 
-    #[NoReturn] #[Route(path: '/save-workout', name: 'save_workout', methods: "POST")]
+    #[NoReturn]
+    #[Route(path: '/save-workout', name: 'save_workout', methods: "POST")]
     public function saveWorkout(Request $request, LoggerInterface $logger): void{
         $selectedExercises = $request->request->all()['selected_exercises'];
         $workout = new Workout();
@@ -84,7 +104,7 @@ class WorkoutController extends AbstractController
         }
         $workout->setExercises($exerciseCollection);
 
-        dd($workout);
+//        dd($workout);
         $this->workoutRepository->save($workout);
     }
 }

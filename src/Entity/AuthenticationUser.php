@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AuthenticationUserRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -39,6 +40,11 @@ class AuthenticationUser implements UserInterface, PasswordAuthenticatedUserInte
 
     #[ORM\Column]
     private int $activityLevel;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Workout::class, mappedBy="user")
+     */
+    private Collection $workouts;
 
     public function __construct()
     {
@@ -177,5 +183,35 @@ class AuthenticationUser implements UserInterface, PasswordAuthenticatedUserInte
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|Workout[]
+     */
+    public function getWorkouts(): Collection
+    {
+        return $this->workouts;
+    }
+
+    public function addWorkout(Workout $workout): self
+    {
+        if (!$this->workouts->contains($workout)) {
+            $this->workouts[] = $workout;
+            $workout->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWorkout(Workout $workout): self
+    {
+        if ($this->workouts->removeElement($workout)) {
+            // set the owning side to null (unless already changed)
+            if ($workout->getUser() === $this) {
+                $workout->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

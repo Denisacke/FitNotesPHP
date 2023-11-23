@@ -26,11 +26,11 @@
                 }
         </script>
 {% endblock %}
-        <form action="/save-workout" method="post">
+        {{ form_start(form) }}
                 <div class="relative">
                         {% block body %}
                                 <div class="flex flex-col overflow-y-scroll workout-list">
-                                        <div class="flex flex-row flex-wrap">
+                                        <div class="flex flex-row flex-wrap" data-prototype="{{ form_widget(form.exercises.vars.prototype)|e }}">
                                                 {% for exercise in exercises %}
                                                         <div class="flex flex-col ml-3 w-56 h-auto items-center justify-center border shadow">
                                                                 <img src="{{ exercise.getGifUrl() }}" alt="Exercise GIF">
@@ -57,16 +57,13 @@
 
                                                 {% endfor %}
                                         </div>
-                                        <div class="flex mt-auto ml-auto mb-20 mr-10">
-                                                <button class="cursor-pointer border bg-blue-500 mt-auto mb-2 shadow"> <span class="font-medium"> Submit workout </span></button>
-                                        </div>
                                 </div>
                         {% endblock %}
                         <div class="fixed bottom-3 right-20">
                                 <button type="submit" class="flex cursor-pointer border bg-blue-500 shadow"> <span class="font-medium"> Submit workout </span></button>
                         </div>
                 </div>
-        </form>
+        {{ form_end(form) }}
 </html>
 <style>
         .workout-list {

@@ -3,8 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Exercise;
-use App\Entity\User;
-use App\Entity\Workout;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,7 +21,7 @@ class ExerciseRepository extends ServiceEntityRepository
         parent::__construct($registry, Exercise::class);
     }
 
-    public function save(User $entity, bool $flush = true): void
+    public function save(Exercise $entity, bool $flush = true): void
     {
         $this->getEntityManager()->persist($entity);
         if ($flush) {
@@ -31,7 +29,7 @@ class ExerciseRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(User $entity, bool $flush = true): void
+    public function remove(Exercise $entity, bool $flush = true): void
     {
         $this->getEntityManager()->remove($entity);
 

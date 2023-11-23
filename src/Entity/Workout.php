@@ -17,9 +17,13 @@ class Workout
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column]
+    private string $name = '';
+
     #[ORM\ManyToMany(targetEntity: Exercise::class, inversedBy: "workouts")]
     #[ORM\JoinTable(name: "workout_exercise")]
     private Collection $exercises;
+
 
     /**
      * @ORM\ManyToOne(targetEntity=AuthenticationUser::class)
@@ -43,7 +47,6 @@ class Workout
         return $this;
     }
 
-
     /**
      * @return Collection|Exercise[]
      */
@@ -58,5 +61,47 @@ class Workout
     public function setExercises(Collection $exercises): void
     {
         $this->exercises = $exercises;
+    }
+
+    public function addExercise(Exercise $exercise): void
+    {
+        $this->exercises->add($exercise);
+    }
+
+    public function removeExercise(Exercise $exercise): void
+    {
+        $this->exercises->removeElement($exercise);
+    }
+
+    /**
+     * @return AuthenticationUser|null
+     */
+    public function getUser(): ?AuthenticationUser
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param AuthenticationUser|null $user
+     */
+    public function setUser(?AuthenticationUser $user): void
+    {
+        $this->user = $user;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }

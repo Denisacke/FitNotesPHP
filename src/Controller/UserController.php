@@ -72,15 +72,9 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Encode the password before persisting the user
             $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
             $this->userService->saveUser($user);
-            // Persist the user to the database (you may want to use the Entity Manager for this)
-            // $entityManager = $this->getDoctrine()->getManager();
-            // $entityManager->persist($user);
-            // $entityManager->flush();
 
-            // Redirect or do something else after successful registration
             return $this->redirectToRoute('home_page');
         }
 

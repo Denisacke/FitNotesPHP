@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ExerciseRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExerciseRepository::class)]
@@ -39,7 +40,7 @@ class Exercise
     private ?int $caloriesBurned = null;
 
     #[ORM\ManyToMany(targetEntity: Workout::class, mappedBy: "exercises")]
-    private array $workouts;
+    private Collection $workouts;
 
     /**
      * @return string
@@ -181,12 +182,12 @@ class Exercise
         return $this;
     }
 
-    public function getWorkouts(): array
+    public function getWorkouts(): Collection
     {
         return $this->workouts;
     }
 
-    public function setWorkouts(array $workouts): void
+    public function setWorkouts(Collection $workouts): void
     {
         $this->workouts = $workouts;
     }
