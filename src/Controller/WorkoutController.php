@@ -67,44 +67,42 @@ class WorkoutController extends AbstractController
 //            $this->exerciseRepository->save(ExerciseMapper::mapFromExerciseDTOToExercise($exerciseDTO));
             $exercises[] = $exerciseDTO;
         }
-
-        $workout = new Workout();
-        $form = $this->createForm(WorkoutType::class, $workout);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            return $this->redirectToRoute('home_page');
-        }
+//
+//        $workout = new Workout();
+//        $form = $this->createForm(WorkoutType::class, $workout);
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//
+//            return $this->redirectToRoute('home_page');
+//        }
 
         return $this->render('test.html.twig', [
             'rightContent' => 'workout/workout_list.html.twig',
-            'form' => $form->createView(),
             'exercises' => $exercises
         ]);
     }
 
     #[NoReturn]
-    #[Route(path: '/save-workout', name: 'save_workout', methods: "POST")]
+    #[Route(path: '/save-workout', name: 'save_workout', methods: "POST", format: "json")]
     public function saveWorkout(Request $request, LoggerInterface $logger): void{
-        $selectedExercises = $request->request->all()['selected_exercises'];
-        $workout = new Workout();
-        $exerciseCollection = new ArrayCollection();
-        foreach ($selectedExercises as $exerciseName) {
-            $exercise = $this->exerciseRepository->findOneBy(['name' => $exerciseName]);
+        $content = $request->getContent();
+        $data = json_decode($content, true);
 
-            // Check if exercise with the given name was found
-            if ($exercise) {
-                $exerciseCollection->add($exercise);
-            } else {
-                $logger->error("Exercise not found!");
-                // Handle the case where the exercise with the given name was not found
-                // You might want to log an error or handle it based on your application's logic
-            }
+        if (isset($data['selected_exercises'])) {
+            $selectedExercises = $data['selected_exercises'];
+            // Your logic to process selected exercises
+            dd($selectedExercises);
+
+            $workout = new Workout();
+            $workout->setName('New workout');
+            $workout->setExercises($selectedExercises);
+
+            $this->workoutRepository->save($workout);
+        } else {
+            // Handle the case where 'selected_exercises' is not present in the JSON data
+            $logger->error("'selected_exercises' not found in JSON data");
         }
-        $workout->setExercises($exerciseCollection);
 
-//        dd($workout);
-        $this->workoutRepository->save($workout);
     }
 }

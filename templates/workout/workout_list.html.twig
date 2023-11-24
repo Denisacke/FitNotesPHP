@@ -2,45 +2,58 @@
 {% block javascripts %}
         <script type="text/javascript">
                 let selectedExercises = [];
-                function addExerciseToWorkout(exerciseName) {
-                        const button = document.getElementById(exerciseName);
-                        button.hidden = true;
+                function addExerciseToWorkout(exercise) {
+                    const exerciseObject = JSON.parse(exercise);
+                    const button = document.getElementById(exerciseObject.name);
+                    button.hidden = true;
 
-                        const deleteButton = document.getElementById('delete-' + exerciseName);
-                        deleteButton.hidden = false;
+                    const deleteButton = document.getElementById('delete-' + exerciseObject.name);
+                    deleteButton.hidden = false;
 
-                        document.getElementById('selected-' + exerciseName).value = exerciseName;
+                    document.getElementById('selected-' + exerciseObject.name).value = exerciseObject.name;
 
-                        selectedExercises.push(exerciseName);
-                        console.log(exerciseName);
+                    selectedExercises.push(exerciseObject);
                 }
 
-                function removeExerciseFromWorkout(exerciseName) {
-                        document.getElementById('selected-' + exerciseName).value = '';
+                function removeExerciseFromWorkout(exercise) {
+                    const exerciseObject = JSON.parse(exercise);
+                    document.getElementById('selected-' + exerciseObject.name).value = '';
 
-                        selectedExercises = selectedExercises.slice(selectedExercises.findIndex(exercise => exercise.name === exerciseName), 1);
+                    selectedExercises = selectedExercises.slice(selectedExercises.findIndex(selectedExercise => selectedExercise.name === exerciseObject.name), 1);
                 }
 
-                function isExerciseAddedToWorkout(exerciseName) {
-                        return selectedExercises.some(selectedExercise => selectedExercise === exerciseName);
+                function isExerciseAddedToWorkout(exercise) {
+                        return selectedExercises.some(selectedExercise => selectedExercise === JSON.parse(exercise).name);
+                }
+
+                function submitExercises(){
+                    fetch('/save-workout', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({'selected_exercises': selectedExercises})
+                    })
+                        .then(response => response.json())
+                        .then(response => console.log(JSON.stringify(response)))
                 }
         </script>
 {% endblock %}
-        {{ form_start(form) }}
                 <div class="relative">
                         {% block body %}
                                 <div class="flex flex-col overflow-y-scroll workout-list">
-                                        <div class="flex flex-row flex-wrap" data-prototype="{{ form_widget(form.exercises.vars.prototype)|e }}">
+                                        <div class="flex flex-row flex-wrap">
                                                 {% for exercise in exercises %}
                                                         <div class="flex flex-col ml-3 w-56 h-auto items-center justify-center border shadow">
                                                                 <img src="{{ exercise.getGifUrl() }}" alt="Exercise GIF">
                                                                 <div class="flex flex-row w-full px-2 justify-between">
                                                                         <span class="font-medium"> Name: </span>
-                                                                        <span> {{ exercise.getName() }} </span>
+                                                                        <span> {{ exercise.name }} </span>
                                                                 </div>
                                                                 <div class="flex flex-row w-full px-2 justify-between">
                                                                         <span class="font-medium"> Target: </span>
-                                                                        <span> {{ exercise.getTarget() }} </span>
+                                                                        <span> {{ exercise.target }} </span>
                                                                 </div>
                                                                 <span class="w-full font-medium"> Secondary muscles </span>
                                                                 {% for muscle in exercise.getSecondaryMuscles() %}
@@ -51,8 +64,8 @@
                                                                 {% endfor %}
                                                                 <input type="hidden" name="selected_exercises[]" id="selected-{{ exercise.name }}">
 
-                                                                <button id="{{ exercise.name }}" onclick="addExerciseToWorkout('{{ exercise.name }}')" type="button" class="cursor-pointer bg-blue-500 border mt-auto mb-2 shadow"> <span class="font-medium"> Add to workout </span></button>
-                                                                <button id="delete-{{ exercise.name }}" onclick="removeExerciseFromWorkout('{{ exercise.name }}')" type="button" class="cursor-pointer bg-red-500 border mt-auto mb-2 shadow" hidden> <span class="font-medium"> Remove exercise </span></button>
+                                                                <button id="{{ exercise.name }}" onclick="addExerciseToWorkout('{{ exercise|serialize(format = 'json') }}')" type="button" class="cursor-pointer bg-blue-500 border mt-auto mb-2 shadow"> <span class="font-medium"> Add to workout </span></button>
+                                                                <button id="delete-{{ exercise.name }}" onclick="removeExerciseFromWorkout('{{ exercise|serialize(format = 'json') }}')" type="button" class="cursor-pointer bg-red-500 border mt-auto mb-2 shadow" hidden> <span class="font-medium"> Remove exercise </span></button>
                                                         </div>
 
                                                 {% endfor %}
@@ -60,10 +73,9 @@
                                 </div>
                         {% endblock %}
                         <div class="fixed bottom-3 right-20">
-                                <button type="submit" class="flex cursor-pointer border bg-blue-500 shadow"> <span class="font-medium"> Submit workout </span></button>
+                                <button type="submit" onclick="submitExercises()" class="flex cursor-pointer border bg-blue-500 shadow"> <span class="font-medium"> Submit workout </span></button>
                         </div>
                 </div>
-        {{ form_end(form) }}
 </html>
 <style>
         .workout-list {

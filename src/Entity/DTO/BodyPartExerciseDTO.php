@@ -147,4 +147,5 @@ class BodyPartExerciseDTO
     {
         $this->instructions = $instructions;
     }
+
 }
