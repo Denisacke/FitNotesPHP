@@ -1,0 +1,7 @@
+<html lang="en">
+{{ form_start(form) }}
+{% for exercise in exercises %}
+    <span> {{ exercise.getName() }}</span>
+{% endfor %}
+{{ form_end(form) }}
+</html>

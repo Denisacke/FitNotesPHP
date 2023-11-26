@@ -20,15 +20,12 @@ class Workout
     #[ORM\Column]
     private string $name = '';
 
-    #[ORM\ManyToMany(targetEntity: Exercise::class, inversedBy: "workouts")]
+    #[ORM\ManyToMany(targetEntity: Exercise::class, inversedBy: "workouts", cascade: ["persist"])]
     #[ORM\JoinTable(name: "workout_exercise")]
     private Collection $exercises;
 
-
-    /**
-     * @ORM\ManyToOne(targetEntity=AuthenticationUser::class)
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: AuthenticationUser::class)]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id")]
     private ?AuthenticationUser $user;
     
     public function __construct()

@@ -50,6 +50,10 @@ class AuthenticationUserRepository extends ServiceEntityRepository implements Pa
     public function findById($id): AuthenticationUser {
         return $this->getEntityManager()->getRepository(AuthenticationUser::class)->find($id);
     }
+
+    public function findByName($name): AuthenticationUser {
+        return $this->getEntityManager()->getRepository(AuthenticationUser::class)->find($name);
+    }
 //    /**
 //     * @return AuthenticationUser[] Returns an array of AuthenticationUser objects
 //     */

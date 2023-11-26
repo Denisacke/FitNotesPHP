@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\AuthenticationUser;
-use App\Entity\User;
 use App\Repository\AuthenticationUserRepository;
 
 class UserService

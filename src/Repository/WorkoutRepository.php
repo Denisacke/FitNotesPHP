@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\AuthenticationUser;
 use App\Entity\Workout;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -36,6 +37,23 @@ class WorkoutRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findById($id): Workout {
+        return $this->getEntityManager()->getRepository(Workout::class)->find($id);
+    }
+
+    /**
+     * @param AuthenticationUser $user
+     * @return Workout[]
+     */
+    public function findAllByUser(AuthenticationUser $user): array
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

@@ -41,9 +41,7 @@ class AuthenticationUser implements UserInterface, PasswordAuthenticatedUserInte
     #[ORM\Column]
     private int $activityLevel;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Workout::class, mappedBy="user")
-     */
+    #[ORM\OneToMany(mappedBy: "user", targetEntity: Workout::class)]
     private Collection $workouts;
 
     public function __construct()
