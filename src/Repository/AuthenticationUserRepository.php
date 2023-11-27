@@ -51,9 +51,10 @@ class AuthenticationUserRepository extends ServiceEntityRepository implements Pa
         return $this->getEntityManager()->getRepository(AuthenticationUser::class)->find($id);
     }
 
-    public function findByName($name): AuthenticationUser {
-        return $this->getEntityManager()->getRepository(AuthenticationUser::class)->find($name);
+    public function findByUsername($username): AuthenticationUser {
+        return $this->getEntityManager()->getRepository(AuthenticationUser::class)->find($username);
     }
+
 //    /**
 //     * @return AuthenticationUser[] Returns an array of AuthenticationUser objects
 //     */
@@ -69,13 +70,13 @@ class AuthenticationUserRepository extends ServiceEntityRepository implements Pa
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?AuthenticationUser
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findOneByUsername($value): ?AuthenticationUser
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.username = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

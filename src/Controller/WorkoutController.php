@@ -23,6 +23,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class WorkoutController extends AbstractController
 {
     private array $bodyParts = ["back", "cardio", "chest", "lower arms", "lower legs", "neck", "shoulders", "upper arms", "upper legs", "waist"];
+    private array $muscles = ["abductors", "abs", "adductors", "biceps", "calves",
+        "cardiovascular system", "delts", "forearms", "glutes", "hamstrings", "lats",
+        "levator scapulae", "pectorals", "quads", "serratus anterior", "spine", "traps", "triceps", "upper back"];
     private Client $client;
     private WorkoutRepository $workoutRepository;
     private ExerciseRepository $exerciseRepository;
@@ -44,7 +47,32 @@ class WorkoutController extends AbstractController
     #[Route(path: '/workout', name: 'workout_page')]
     public function renderWorkouts(LoggerInterface $logger): Response{
 
-        return $this->render('test.html.twig', ['rightContent' => 'workout/workout_bodypart_list.html.twig', 'bodyParts' => $this->bodyParts]);
+        return $this->render('test.html.twig',
+            [
+                'rightContent' => 'workout/workout_bodypart_list.html.twig',
+                'bodyParts' => $this->bodyParts,
+                'muscles' => $this->muscles
+            ]
+        );
+    }
+
+    private function buildExerciseArray($responseArray): array {
+        $exercises = [];
+        foreach ($responseArray as $item) {
+            $exerciseDTO = new BodyPartExerciseDTO();
+            $exerciseDTO->setId($item['id']);
+            $exerciseDTO->setBodyPart($item['bodyPart']);
+            $exerciseDTO->setName($item['name']);
+            $exerciseDTO->setTarget($item['target']);
+            $exerciseDTO->setSecondaryMuscles($item['secondaryMuscles']);
+            $exerciseDTO->setEquipment($item['equipment']);
+            $exerciseDTO->setInstructions($item['instructions']);
+            $exerciseDTO->setGifUrl($item['gifUrl']);
+
+            $exercises[] = $exerciseDTO;
+        }
+
+        return $exercises;
     }
 
     #[Route(path: '/find-exercises-bodypart', name: 'find_exercises_by_bodypart', methods: "POST")]
@@ -60,34 +88,28 @@ class WorkoutController extends AbstractController
 
         $responseArray = json_decode($response->getBody(), true);
 
-        $exercises = [];
-        foreach ($responseArray as $item) {
-            $exerciseDTO = new BodyPartExerciseDTO();
-            $exerciseDTO->setId($item['id']);
-            $exerciseDTO->setBodyPart($item['bodyPart']);
-            $exerciseDTO->setName($item['name']);
-            $exerciseDTO->setTarget($item['target']);
-            $exerciseDTO->setSecondaryMuscles($item['secondaryMuscles']);
-            $exerciseDTO->setEquipment($item['equipment']);
-            $exerciseDTO->setInstructions($item['instructions']);
-            $exerciseDTO->setGifUrl($item['gifUrl']);
+        return $this->render('test.html.twig', [
+            'rightContent' => 'workout/workout_list.html.twig',
+            'exercises' => $this->buildExerciseArray($responseArray)
+        ]);
+    }
 
-//            $this->exerciseRepository->save(ExerciseMapper::mapFromExerciseDTOToExercise($exerciseDTO));
-            $exercises[] = $exerciseDTO;
-        }
-//
-//        $workout = new Workout();
-//        $form = $this->createForm(WorkoutType::class, $workout);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//
-//            return $this->redirectToRoute('home_page');
-//        }
+    #[Route(path: '/find-exercises-muscle', name: 'find_exercises_by_muscle', methods: "POST")]
+    public function renderExercisesByMuscle(Request $request): Response{
+        $selectedMuscle = $request->request->get('muscle');
+
+        $response = $this->client->request('GET', 'https://exercisedb.p.rapidapi.com/exercises/target/' . $selectedMuscle . '?limit=10', [
+            'headers' => [
+                'X-RapidAPI-Host' => 'exercisedb.p.rapidapi.com',
+                'X-RapidAPI-Key' => '47daba2431msh4a910d0f3b0f50dp13a2a9jsnd0e012cc6431',
+            ],
+        ]);
+
+        $responseArray = json_decode($response->getBody(), true);
 
         return $this->render('test.html.twig', [
             'rightContent' => 'workout/workout_list.html.twig',
-            'exercises' => $exercises
+            'exercises' => $this->buildExerciseArray($responseArray)
         ]);
     }
 
@@ -118,7 +140,7 @@ class WorkoutController extends AbstractController
             $workout = new Workout();
             $workout->setName('New workout');
             $workout->setExercises($exerciseCollection);
-            $workout->setUser($this->authenticationUserRepository->findByName($security->getUser()->getUserIdentifier()));
+            $workout->setUser($this->authenticationUserRepository->findByUsername($security->getUser()->getUserIdentifier()));
             $this->workoutRepository->save($workout);
         } else {
             $logger->error("'selected_exercises' not found in JSON data");

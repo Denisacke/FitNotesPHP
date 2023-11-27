@@ -1,9 +1,18 @@
 <html lang="en">
     <form action="/find-exercises-bodypart" method="post">
-        <label for="bodyPart">Choose an exercise:</label>
+        <label for="bodyPart">Choose a bodypart for which to find exercises:</label>
         <select id="bodyPart" name="bodyPart">
             {% for bodyPart in bodyParts %}
                 <option value="{{ bodyPart }}">{{ bodyPart }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Submit">
+    </form>
+    <form action="/find-exercises-muscle" method="post">
+        <label for="muscle">Or go for a muscle group instead:</label>
+        <select id="muscle" name="muscle">
+            {% for muscle in muscles %}
+                <option value="{{ muscle }}">{{ muscle }}</option>
             {% endfor %}
         </select>
         <input type="submit" value="Submit">
