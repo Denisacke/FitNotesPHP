@@ -118,7 +118,7 @@ class WorkoutController extends AbstractController
         $content = $request->getContent();
         $data = json_decode($content, true);
 
-        if (isset($data['selected_exercises'])) {
+        if (isset($data['selected_exercises']) && isset($data['workout_name'])) {
             $selectedExercises = $data['selected_exercises'];
 
             $exerciseCollection = new ArrayCollection();
@@ -138,12 +138,12 @@ class WorkoutController extends AbstractController
             }
 
             $workout = new Workout();
-            $workout->setName('New workout');
+            $workout->setName($data['workout_name']);
             $workout->setExercises($exerciseCollection);
-            $workout->setUser($this->authenticationUserRepository->findByUsername($security->getUser()->getUserIdentifier()));
+            $workout->setUser($this->authenticationUserRepository->findOneByUsername($security->getUser()->getUserIdentifier()));
             $this->workoutRepository->save($workout);
         } else {
-            $logger->error("'selected_exercises' not found in JSON data");
+            $logger->error("'selected_exercises' or 'workout_name' not found in JSON data");
         }
         return $this->redirectToRoute('home_page');
     }

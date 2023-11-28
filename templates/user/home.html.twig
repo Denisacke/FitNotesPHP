@@ -1,7 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
 <html lang="en">
     <div>Hello, {{ user.username }}! This should be your dashboard</div>
     <div> Your Basal Metabolic Rate is {{ BMR }}</div>
-{#    {% for workout in workouts %}#}
-{#        <span> {{ workout.name }}</span>#}
-{#    {% endfor %}#}
+    <div class="flex flex-row flex-wrap">
+        {% for workout in workouts %}
+            <div class="flex flex-col cursor-pointer border shadow">
+                <span> {{ workout.name }}:</span>
+                <div class="flex flex-row space-x-2">
+                    {% for exercise in workout.exercises %}
+                        <span> {{ exercise.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 </html>
+{% endblock %}

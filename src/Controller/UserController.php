@@ -67,13 +67,14 @@ class UserController extends AbstractController
         $logger->info($this->userService->findUserByName($security->getUser()->getUserIdentifier())->getUsername());
         $requirements = $this->userService->getUserDailyCalorieRequirements($this->userService->findUserByName($security->getUser()->getUserIdentifier()));
 
+        $authenticatedUser = $this->userService->findUserByName($security->getUser()->getUserIdentifier());
         return $this->render(
             'test.html.twig',
             [
                 'rightContent' => 'user/home.html.twig',
                 'user' => $security->getUser(),
-                'BMR' => $requirements['data']['BMR']
-//                'workouts' => $this->workoutService->findAllWorkoutsByUser($security->getUser())
+                'BMR' => $requirements['data']['BMR'],
+                'workouts' => $this->workoutService->findAllWorkoutsByUser($authenticatedUser)
             ]
         );
     }
