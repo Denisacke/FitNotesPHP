@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PerformedWorkoutRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,8 +16,9 @@ class PerformedWorkout
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $performedExercises = [];
+    #[ORM\OneToMany(mappedBy: "performed_workout", targetEntity: PerformedExercise::class, cascade: ["persist"])]
+    #[ORM\JoinTable(name: "performed_workout_performed_exercise")]
+    private Collection $performedExercises;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $performedDate = null;
@@ -33,12 +35,12 @@ class PerformedWorkout
         return $this;
     }
 
-    public function getPerformedExercises(): array
+    public function getPerformedExercises(): Collection
     {
         return $this->performedExercises;
     }
 
-    public function setPerformedExercises(array $performedExercises): static
+    public function setPerformedExercises(Collection $performedExercises): static
     {
         $this->performedExercises = $performedExercises;
 

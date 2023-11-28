@@ -2,12 +2,10 @@
 
 namespace App\Entity;
 
+use App\Repository\PerformedExerciseRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="performed_exercise")
- */
+#[ORM\Entity(repositoryClass: PerformedExerciseRepository::class)]
 #[ORM\Table(name: '`performed_exercise`')]
 class PerformedExercise
 {
@@ -22,13 +20,19 @@ class PerformedExercise
      * @ORM\ManyToOne(targetEntity="AuthenticatedUser")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private User $user;
+    private AuthenticationUser $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="Exercise")
      * @ORM\JoinColumn(name="exercise_id", referencedColumnName="id")
      */
     private Exercise $exercise;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=PerformedWorkout::class, inversedBy="performedExercises")
+     * @ORM\JoinColumn(name="performed_workout_id", referencedColumnName="id")
+     */
+    private PerformedWorkout $performedWorkout;
 
     /**
      * @ORM\Column(type="integer")

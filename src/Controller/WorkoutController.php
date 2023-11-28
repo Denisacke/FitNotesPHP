@@ -12,7 +12,6 @@ use App\Repository\ExerciseRepository;
 use App\Repository\WorkoutRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
-use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -74,6 +73,7 @@ class WorkoutController extends AbstractController
 
         return $exercises;
     }
+
 
     #[Route(path: '/find-exercises-bodypart', name: 'find_exercises_by_bodypart', methods: "POST")]
     public function renderExercisesByBodyPart(Request $request): Response{
