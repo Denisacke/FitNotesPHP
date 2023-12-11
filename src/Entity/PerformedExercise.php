@@ -9,49 +9,33 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: '`performed_exercise`')]
 class PerformedExercise
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private int $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="AuthenticatedUser")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: "AuthenticationUser")]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id")]
     private AuthenticationUser $user;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Exercise")
-     * @ORM\JoinColumn(name="exercise_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: "Exercise")]
+    #[ORM\JoinColumn(name: "exercise_id", referencedColumnName: "id")]
     private Exercise $exercise;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=PerformedWorkout::class, inversedBy="performedExercises")
-     * @ORM\JoinColumn(name="performed_workout_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: PerformedWorkout::class, inversedBy: "performedExercises")]
+    #[ORM\JoinColumn(name: "performed_workout_id", referencedColumnName: "id")]
     private PerformedWorkout $performedWorkout;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: "integer")]
     private int $reps;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: "integer")]
     private int $sets;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: "float")]
     private int $weight;
 
-    /**
-     * @ORM\Column(type="date")
-     */
+    #[ORM\Column(type: "datetime")]
     private \DateTime $performedDate;
 
     /**
@@ -70,6 +54,17 @@ class PerformedExercise
         $this->id = $id;
     }
 
+    public function getPerformedWorkout(): PerformedWorkout
+    {
+        return $this->performedWorkout;
+    }
+
+    public function setPerformedWorkout(PerformedWorkout $performedWorkout): void
+    {
+        $this->performedWorkout = $performedWorkout;
+    }
+
+
     /**
      * @return mixed
      */
@@ -78,6 +73,10 @@ class PerformedExercise
         return $this->user;
     }
 
+    public function getName()
+    {
+        return $this->exercise->getName();
+    }
     /**
      * @return \DateTime
      */

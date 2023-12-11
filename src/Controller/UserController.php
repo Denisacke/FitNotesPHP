@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
-use App\Controller\Forms\AuthenticationUserType;
 use App\Entity\AuthenticationUser;
+use App\Entity\DTO\WorkoutDTO;
+use App\Entity\DTO\WorkoutMapper;
+use App\Entity\Workout;
+use App\Form\AuthenticationUserType;
 use App\Service\UserService;
 use App\Service\WorkoutService;
 use GuzzleHttp\Exception\GuzzleException;
@@ -57,13 +60,15 @@ class UserController extends AbstractController
         return $this->render('user/user.html.twig');
     }
 
+    public function mapWorkout(Workout $workout): WorkoutDTO{
+        return WorkoutMapper::mapFromWorkoutToWorkoutDTO($workout);
+    }
     /**
      * @throws GuzzleException
      */
     #[Route(path: '/home', name: 'home_page')]
     public function renderDashboard(Security $security, LoggerInterface $logger): Response{
 
-        $logger->info($this->userService->findUserByName($security->getUser()->getUserIdentifier())->getUsername());
         $requirements = $this->userService->getUserDailyCalorieRequirements($this->userService->findUserByName($security->getUser()->getUserIdentifier()));
 
         $authenticatedUser = $this->userService->findUserByName($security->getUser()->getUserIdentifier());
@@ -73,7 +78,7 @@ class UserController extends AbstractController
                 'rightContent' => 'user/home.html.twig',
                 'user' => $security->getUser(),
                 'BMR' => $requirements['data']['BMR'],
-                'workouts' => $this->workoutService->findAllWorkoutsByUser($authenticatedUser)
+                'workouts' => array_map([$this, 'mapWorkout'], $this->workoutService->findAllWorkoutsByUser($authenticatedUser))
             ]
         );
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Forms;
+namespace App\Form;
 
 use App\Entity\AuthenticationUser;
 use Symfony\Component\Form\AbstractType;
@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints\Range;
 
 class AuthenticationUserType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('username')

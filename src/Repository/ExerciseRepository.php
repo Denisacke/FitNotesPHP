@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Exercise;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -38,6 +39,9 @@ class ExerciseRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByName($name): Exercise {
+        return $this->getEntityManager()->getRepository(Exercise::class)->find($name);
+    }
 //    /**
 //     * @return Workout[] Returns an array of Workout objects
 //     */
@@ -62,4 +66,17 @@ class ExerciseRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findOneByName($value): ?Exercise
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.name = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

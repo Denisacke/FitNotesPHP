@@ -21,6 +21,13 @@ class PerformedWorkoutRepository extends ServiceEntityRepository
         parent::__construct($registry, PerformedWorkout::class);
     }
 
+    public function save(PerformedWorkout $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 //    /**
 //     * @return PerformedWorkout[] Returns an array of PerformedWorkout objects
 //     */

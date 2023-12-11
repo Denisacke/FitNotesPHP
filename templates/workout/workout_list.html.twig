@@ -67,6 +67,7 @@
                                                                                 <span> {{ muscle }} </span>
                                                                         </div>
                                                                 {% endfor %}
+                                                                <input type="hidden" name="selected_exercises[]" id="selected-{{ exercise.name }}">
 
                                                                 <button id="{{ exercise.name }}" onclick="addExerciseToWorkout('{{ exercise|serialize(format = 'json') }}')" type="button" class="cursor-pointer bg-blue-500 border mt-auto mb-2 shadow"> <span class="font-medium"> Add to workout </span></button>
                                                                 <button id="delete-{{ exercise.name }}" onclick="removeExerciseFromWorkout('{{ exercise|serialize(format = 'json') }}')" type="button" class="cursor-pointer bg-red-500 border mt-auto mb-2 shadow" hidden> <span class="font-medium"> Remove exercise </span></button>

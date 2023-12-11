@@ -16,7 +16,10 @@ class PerformedWorkout
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToMany(mappedBy: "performed_workout", targetEntity: PerformedExercise::class, cascade: ["persist"])]
+    #[ORM\Column]
+    private string $name;
+
+    #[ORM\OneToMany(mappedBy: "performedWorkout", targetEntity: PerformedExercise::class, cascade: ["persist"], fetch: "EAGER")]
     #[ORM\JoinTable(name: "performed_workout_performed_exercise")]
     private Collection $performedExercises;
 
@@ -58,4 +61,16 @@ class PerformedWorkout
 
         return $this;
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+
 }
