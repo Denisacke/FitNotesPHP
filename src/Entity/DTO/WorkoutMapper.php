@@ -13,6 +13,7 @@ class WorkoutMapper
     {
         $workoutDTO = new WorkoutDTO();
 
+        $workoutDTO->setId($workout->getId());
         $workoutDTO->setName($workout->getName());
         $workoutDTO->setExercises($workout
             ->getExercises()

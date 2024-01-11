@@ -36,6 +36,18 @@ class ExerciseMapper
         return $exerciseDTO;
     }
 
+    public static function mapFromPerformedExerciseToPerformedExerciseDTO(PerformedExercise $exercise): PerformedExerciseDTO
+    {
+        $performedExerciseDTO = new PerformedExerciseDTO();
+        $performedExerciseDTO->setPerformedDate($exercise->getPerformedDate());
+        $performedExerciseDTO->setSets($exercise->getSets());
+        $performedExerciseDTO->setReps($exercise->getReps());
+        $performedExerciseDTO->setWeight($exercise->getWeight());
+        $performedExerciseDTO->setName($exercise->getName());
+
+        return $performedExerciseDTO;
+    }
+
     public static function mapFromPerformedExerciseDTOToPerformedExercise(
         PerformedExerciseDTO $performedExerciseDTO,
         PerformedWorkoutDTO $performedWorkoutDTO,
@@ -46,7 +58,6 @@ class ExerciseMapper
         $performedExercise->setExercise($exercise);
         $performedExercise->setUser($authenticationUser);
 
-        // TODO map WorkoutDTO to Workout
         $performedExercise->setPerformedDate($performedWorkoutDTO->getPerformedDate());
         $performedExercise->setReps($performedExerciseDTO->getReps());
         $performedExercise->setWeight($performedExerciseDTO->getWeight());

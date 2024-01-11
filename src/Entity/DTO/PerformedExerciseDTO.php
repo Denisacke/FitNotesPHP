@@ -4,14 +4,12 @@ namespace App\Entity\DTO;
 
 class PerformedExerciseDTO
 {
-    private string $name;
-    private int $reps;
+    public string $name;
+    public int $reps;
+    public int $sets;
+    public int $weight;
+    public \DateTime $performedDate;
 
-    private int $sets;
-
-    private int $weight;
-
-    private \DateTime $performedDate;
     public function __construct()
     {
 

@@ -2,46 +2,82 @@
 
 {% block javascripts %}
     <script>
-        function redirectToWorkoutForm(workout) {
-            fetch('/create-performed-workout', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    'workout': workout
-                })
-            })
-                .then(response => response.json())
-                .then(response => {
-                    console.log(JSON.stringify(response));
-                    // Assuming the response contains the URL for redirection
-                    window.location.href = '/create-performed-workout';
-                })
+
+        function redirectToDetailsPage(id){
+            window.location.href = '/workout-details/' + id;
         }
+
+        function deleteWorkout(workoutId) {
+            const confirmation = confirm("Are you sure you want to delete this workout?");
+            if(confirmation){
+                fetch('/delete-workout/' + workoutId, {
+                    method: 'DELETE',
+                })
+                    // .then(() => window.location.href = '/home')
+
+            }
+        }
+
+        function editWorkout(workoutId) {
+            // Redirect to the edit page or open a modal for editing
+            window.location.href = '/edit-workout/' + workoutId;
+        }
+
     </script>
 {% endblock %}
 {% block body %}
-<html lang="en">
-    <div>Hello, {{ user.username }}! This should be your dashboard</div>
-    <div> Your Basal Metabolic Rate is {{ BMR }}</div>
-    <form action="/create-performed-workout" method="post">
-        <div class="flex flex-row flex-wrap">
-            {% for workout in workouts %}
-                <div class="flex flex-col cursor-pointer border shadow">
-                    <span> {{ workout.name }}:</span>
-                    <div class="flex flex-row space-x-2">
-                        {% for exercise in workout.exercises %}
-                            <span> {{ exercise.name }}</span>
-                        {% endfor %}
+    <html lang="en">
+    <div class="bg-gray-200 min-h-screen p-8 flex flex-col space-y-2">
+        <div class="text-2xl font-semibold mb-4">Hello, {{ user.username }}! This should be your dashboard</div>
+        <div class="mb-4">Your Basal Metabolic Rate is {{ BMR }}</div>
+        {% if bodyFatPercentage %}
+            <div class="mb-4">Your body fat percentage is centered around: {{ bodyFatPercentage }}</div>
+        {% else %}
+            <div class="mb-4">Currently, you have not entered data about the width of the neck, hips and waist</div>
+            <div class="mb-4">Update your personal data if you want to see it</div>
+            <a class="bg-blue-500 w-32 text-white py-2 px-4 rounded cursor-pointer" onclick="window.location.href = '/update-user'">Update profile data</a>
+        {% endif %}
+        <h4 class="font-bold"> Personal workouts </h4>
+        <form action="/create-performed-workout" method="post">
+            <div class="flex flex-wrap -mx-4">
+                {% for workout in workouts %}
+                    <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 px-4 mb-4">
+                        <div class="bg-white p-4 border shadow">
+                            <div class="w-full flex flex-row space-x-1 justify-end">
+                                <button type="button" onclick="redirectToDetailsPage('{{ workout.id }}')" class="bg-black text-white py-2 px-2 rounded">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                    </svg>
+                                </button>
+                                <button type="button" onclick="editWorkout('{{ workout.id }}')" class="bg-yellow-500 text-white py-2 px-2 rounded hover:bg-yellow-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                                    </svg>
+                                </button>
+                                <button type="button" onclick="deleteWorkout('{{ workout.id }}')" class="bg-red-500 text-white py-2 px-2 rounded hover:bg-red-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <span class="text-lg font-semibold mb-2">{{ workout.name }}:</span>
+                            <div class="flex flex-row flex-wrap">
+                                {% for exercise in workout.exercises %}
+                                    <span class="mr-2">{{ exercise.name }}</span>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" name="workout" value='{{ workout|serialize(format = 'json') }}'>
+                            <div class="mt-2">
+                                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Register performed workout</button>
+                                <input type="hidden" name="workout" value='{{ workout|serialize(format = 'json') }}'>
+                            </div>
+                        </div>
                     </div>
-                    <input hidden name="workout" value='{{ workout|serialize(format = 'json') }}'>
-                    <button class="flex cursor-pointer border bg-blue-500 shadow"> Register performed workout </button>
-                </div>
-            {% endfor %}
-        </div>
-    </form>
-
-</html>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+    </html>
 {% endblock %}

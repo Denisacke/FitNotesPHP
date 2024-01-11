@@ -3,13 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\DTO\BodyPartExerciseDTO;
-use App\Entity\DTO\ExerciseMapper;
 use App\Entity\Exercise;
 use App\Entity\Workout;
-use App\Form\WorkoutType;
 use App\Repository\AuthenticationUserRepository;
 use App\Repository\ExerciseRepository;
-use App\Repository\WorkoutRepository;
+use App\Service\WorkoutService;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
@@ -26,19 +24,19 @@ class WorkoutController extends AbstractController
         "cardiovascular system", "delts", "forearms", "glutes", "hamstrings", "lats",
         "levator scapulae", "pectorals", "quads", "serratus anterior", "spine", "traps", "triceps", "upper back"];
     private Client $client;
-    private WorkoutRepository $workoutRepository;
+    private WorkoutService $workoutService;
     private ExerciseRepository $exerciseRepository;
 
     private AuthenticationUserRepository $authenticationUserRepository;
 
-    public function __construct(WorkoutRepository $workoutRepository,
+    public function __construct(WorkoutService $workoutService,
                                 ExerciseRepository $exerciseRepository,
                                 AuthenticationUserRepository $authenticationUserRepository)
     {
         $this->client = new Client([
             'verify' => false
         ]);
-        $this->workoutRepository = $workoutRepository;
+        $this->workoutService = $workoutService;
         $this->exerciseRepository = $exerciseRepository;
         $this->authenticationUserRepository = $authenticationUserRepository;
     }
@@ -113,6 +111,22 @@ class WorkoutController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/delete-workout/{id}', name: 'delete_workout', methods: "DELETE")]
+    public function deleteWorkout(int $id, LoggerInterface $logger): Response{
+        $this->workoutService->deleteWorkout($id);
+        $logger->info('deleted workout with id' . $id);
+
+        return $this->redirectToRoute('home_page');
+    }
+
+    #[Route(path: '/workout-details/{id}', name: 'workout_details')]
+    public function renderWorkoutDetails(int $id): Response{
+
+        return $this->render('test.html.twig', [
+            'rightContent' => 'workout/workout_details.html.twig',
+            'workout' => $this->workoutService->findWorkoutById($id)
+        ]);
+    }
     #[Route(path: '/save-workout', name: 'save_workout', methods: "POST", format: "json")]
     public function saveWorkout(Request $request, LoggerInterface $logger, Security $security): Response{
         $content = $request->getContent();
@@ -141,9 +155,10 @@ class WorkoutController extends AbstractController
             $workout->setName($data['workout_name']);
             $workout->setExercises($exerciseCollection);
             $workout->setUser($this->authenticationUserRepository->findOneByUsername($security->getUser()->getUserIdentifier()));
-            $this->workoutRepository->save($workout);
+            $this->workoutService->saveWorkout($workout);
         } else {
             $logger->error("'selected_exercises' or 'workout_name' not found in JSON data");
+            dd('Error! Make sure you have selected exercises and entered a name for the workout');
         }
         return $this->redirectToRoute('home_page');
     }

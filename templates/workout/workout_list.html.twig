@@ -17,9 +17,14 @@
 
                 function removeExerciseFromWorkout(exercise) {
                     const exerciseObject = JSON.parse(exercise);
+                    const button = document.getElementById(exerciseObject.name);
+                    button.hidden = false;
+                    console.log('exercise object to remove', exerciseObject);
                     document.getElementById('selected-' + exerciseObject.name).value = '';
+                    const deleteButton = document.getElementById('delete-' + exerciseObject.name);
+                    deleteButton.hidden = true;
 
-                    selectedExercises = selectedExercises.slice(selectedExercises.findIndex(selectedExercise => selectedExercise.name === exerciseObject.name), 1);
+                    selectedExercises = selectedExercises.splice(selectedExercises.findIndex(selectedExercise => selectedExercise.name === exerciseObject.name), 1);
                 }
 
                 function isExerciseAddedToWorkout(exercise) {
@@ -78,7 +83,10 @@
                                 </div>
                         {% endblock %}
                         <div class="fixed bottom-3 right-20">
-                                <button type="submit" onclick="submitExercises()" class="flex cursor-pointer border bg-blue-500 shadow"> <span class="font-medium"> Submit workout </span></button>
+                                <button type="submit" onclick="submitExercises()"
+                                        class="flex cursor-pointer border bg-blue-500 shadow">
+                                        <span class="font-medium"> Submit workout </span>
+                                </button>
                         </div>
                 </div>
 </html>

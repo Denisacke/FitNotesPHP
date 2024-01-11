@@ -1,10 +1,26 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
-    {{ form_start(form) }}
-    <div class="bg-neutral-2">
-        <span>{{ form_widget(form.name) }}</span>
-        {{ form_row(form.performedDate) }}
+    <div class="min-h-screen flex items-center justify-center">
+        {{ form_start(form, {'attr': {'class': 'bg-gray-200 p-8 rounded shadow-md w-96'}}) }}
+
+        <div class="mb-4">
+            <label for="{{ form.name.vars.id }}" class="block text-sm font-medium text-gray-600">Name</label>
+            <div class="mt-1">
+                {{ form_widget(form.name, {'attr': {'class': 'p-2 border border-gray-300 rounded w-full'}}) }}
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="{{ form.performedDate.vars.id }}" class="block text-sm font-medium text-gray-600">Performed Date</label>
+            <div class="mt-1">
+                {{ form_widget(form.performedDate, {'attr': {'class': 'p-2 border border-gray-300 rounded w-full'}}) }}
+            </div>
+        </div>
+
+        <div class="flex items-center justify-center mt-4">
+            <button type="submit" style="background-color: #3b82f6" class="text-white py-2 px-4 rounded">Submit</button>
+        </div>
+
+        {{ form_end(form) }}
     </div>
-    {{ form_end(form) }}
 {% endblock %}

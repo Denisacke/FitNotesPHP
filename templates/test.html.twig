@@ -3,9 +3,11 @@
 {% block title %}TEST!{% endblock %}
 
 {% block body %}
-    <div class="flex flex-row fixed top-0 bottom-0">
-        {% include 'fragments/sidebar.html.twig' %} <!-- Including the sidebar content -->
-        <div class="ml-2">
+    <div class="flex flex-row w-full fixed top-0 bottom-0">
+        <div class="flex">
+            {% include 'fragments/sidebar.html.twig' %} <!-- Including the sidebar content -->
+        </div>
+        <div class="flex ml-2" style="width: 100%"> <!-- Use flex-1 to make it take up remaining space -->
             {% include rightContent %} <!-- Including the content to the right -->
         </div>
     </div>

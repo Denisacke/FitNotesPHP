@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="bg-gray-200 w-full overflow-y-scroll min-h-screen p-8 flex flex-col space-y-2">
+        <div class="text-2xl font-semibold mb-4">Workout Details</div>
+
+        <div class="mb-4">
+            <h3 class="text-xl font-semibold mb-2">Workout Name:</h3>
+            <span>{{ workout.name }}</span>
+        </div>
+
+        <div class="mb-4">
+            <h3 class="text-xl font-semibold mb-2">Exercises:</h3>
+            <div class="flex flex-col w-full flex-wrap">
+                {% for exercise in workout.exercises %}
+                    <div class="flex flex-col ml-3 w-full h-auto items-center justify-center border shadow">
+                        {{ exercise.getGifUrl() }}
+                        <img src="{{ exercise.getGifUrl() }}" alt="Exercise GIF">
+
+                        <div class="flex flex-row w-full px-2 justify-between">
+                            <span class="font-medium">Name:</span>
+                            <span>{{ exercise.name }}</span>
+                        </div>
+
+                        <div class="flex flex-row w-full px-2 justify-between">
+                            <span class="font-medium">Target:</span>
+                            <span>{{ exercise.target }}</span>
+                        </div>
+
+                        <div class="flex flex-row w-full px-2 justify-between">
+                            <span class="font-medium">Instructions:</span>
+                            <ul>
+                                {% for instruction in exercise.instructions %}
+                                <li> {{ instruction }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <span class="w-full font-medium">Secondary Muscles:</span>
+
+                        {% for muscle in exercise.getSecondaryMuscles() %}
+                            <div class="flex flex-row w-full px-2 justify-between">
+                                <span class="font-medium">Muscle Name:</span>
+                                <span>{{ muscle }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <a class="bg-blue-500 w-32 text-white py-2 px-4 rounded cursor-pointer" onclick="window.history.back()">Back to Dashboard</a>
+    </div>
+{% endblock %}

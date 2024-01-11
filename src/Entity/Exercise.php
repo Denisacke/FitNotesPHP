@@ -39,7 +39,7 @@ class Exercise
     #[ORM\Column(nullable: true)]
     private ?int $caloriesBurned = null;
 
-    #[ORM\ManyToMany(targetEntity: Workout::class, mappedBy: "exercises")]
+    #[ORM\ManyToMany(targetEntity: Workout::class, mappedBy: "exercises", cascade: ["remove"])]
     private Collection $workouts;
 
     /**
@@ -64,6 +64,11 @@ class Exercise
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function removeWorkout(Workout $workout): void
+    {
+        $this->workouts->removeElement($workout);
     }
 
     /**

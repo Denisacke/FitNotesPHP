@@ -4,6 +4,7 @@ namespace App\Entity\DTO;
 
 class WorkoutDTO
 {
+    private int $id;
     private string $name;
 
     private array $exercises;
@@ -38,6 +39,16 @@ class WorkoutDTO
     public function setExercises(array $exercises): void
     {
         $this->exercises = $exercises;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
 

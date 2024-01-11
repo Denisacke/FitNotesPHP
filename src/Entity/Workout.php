@@ -20,7 +20,7 @@ class Workout
     #[ORM\Column]
     private string $name = '';
 
-    #[ORM\ManyToMany(targetEntity: Exercise::class, inversedBy: "workouts", cascade: ["persist"])]
+    #[ORM\ManyToMany(targetEntity: Exercise::class, inversedBy: "workouts", cascade: ["persist", "remove"], fetch: "EAGER")]
     #[ORM\JoinTable(name: "workout_exercise")]
     private Collection $exercises;
 
@@ -68,6 +68,7 @@ class Workout
     public function removeExercise(Exercise $exercise): void
     {
         $this->exercises->removeElement($exercise);
+        $exercise->removeWorkout($this);
     }
 
     /**

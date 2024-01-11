@@ -3,28 +3,36 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-    <div class="bg-neutral-2">
-        <h1>Please sign in</h1>
-        <form method="post" action="{{ path('app_login') }}">
-            {# Display error messages if authentication fails #}
-            {% if error %}
-                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            {% endif %}
+    <div class="bg-gray-200 min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded shadow-md w-96">
+            <h1 class="text-2xl font-semibold mb-6 text-center">Please sign in</h1>
 
-            <label for="inputName">Username</label>
-            <input type="text" value="{{ last_username }}" name="username" id="inputName" required autofocus>
+            <form method="post" action="{{ path('app_login') }}" class="space-y-4">
+                {# Display error messages if authentication fails #}
+                {% if error %}
+                    <div class="text-red-500">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
 
-            <label for="inputPassword">Password</label>
-            <input type="password" name="password" id="inputPassword" required>
+                <div class="flex flex-col">
+                    <label for="inputName" class="mb-1 text-sm">Username</label>
+                    <input type="text" value="{{ last_username }}" name="username" id="inputName" class="p-2 border border-gray-300 rounded" required autofocus>
+                </div>
 
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <div class="flex flex-col">
+                    <label for="inputPassword" class="mb-1 text-sm">Password</label>
+                    <input type="password" name="password" id="inputPassword" class="p-2 border border-gray-300 rounded" required>
+                </div>
 
-            <button type="submit">Sign in</button>
-        </form>
-    </div>
-    <div class="flex flex-col">
-        <span class="font-medium"> Don't have an account? Sign up here! </span>
-        <a href="{{ path('signup_page') }}">Sign up</a>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit" style="background-color: #3b82f6" class="w-full text-white py-2 px-4 rounded">Sign in</button>
+            </form>
+            <div class="flex flex-col items-center mt-4 text-gray-600">
+                <span class="font-medium mb-2">Don't have an account? Sign up here!</span>
+                <a href="{{ path('signup_page') }}" class="text-blue-500 hover:underline">Sign up</a>
+            </div>
+        </div>
+
+
     </div>
 {% endblock %}
-

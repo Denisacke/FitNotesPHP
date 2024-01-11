@@ -44,6 +44,15 @@ class AuthenticationUser implements UserInterface, PasswordAuthenticatedUserInte
     #[ORM\Column]
     private string $gender;
 
+    #[ORM\Column]
+    private ?int $neck;
+
+    #[ORM\Column]
+    private ?int $waist;
+
+    #[ORM\Column]
+    private ?int $hip;
+
     #[ORM\OneToMany(mappedBy: "user", targetEntity: Workout::class)]
     private Collection $workouts;
 
@@ -230,5 +239,40 @@ class AuthenticationUser implements UserInterface, PasswordAuthenticatedUserInte
         }
 
         return $this;
+    }
+
+    public function getNeck(): ?int
+    {
+        return $this->neck;
+    }
+
+    public function setNeck(?int $neck): void
+    {
+        $this->neck = $neck;
+    }
+
+    public function getWaist(): ?int
+    {
+        return $this->waist;
+    }
+
+    public function setWaist(?int $waist): void
+    {
+        $this->waist = $waist;
+    }
+
+    public function getHip(): ?int
+    {
+        return $this->hip;
+    }
+
+    public function setHip(?int $hip): void
+    {
+        $this->hip = $hip;
+    }
+
+    public function __toString(): string
+    {
+        return $this->username . $this->hip . $this->waist . $this->neck;
     }
 }

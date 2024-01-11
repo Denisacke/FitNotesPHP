@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\AuthenticationUser;
+use App\Entity\DTO\UserPasswordCheckDTO;
 use App\Entity\DTO\WorkoutDTO;
 use App\Entity\DTO\WorkoutMapper;
 use App\Entity\Workout;
 use App\Form\AuthenticationUserType;
+use App\Form\UpdateUserType;
 use App\Service\UserService;
 use App\Service\WorkoutService;
 use GuzzleHttp\Exception\GuzzleException;
@@ -60,27 +62,63 @@ class UserController extends AbstractController
         return $this->render('user/user.html.twig');
     }
 
-    public function mapWorkout(Workout $workout): WorkoutDTO{
+    private function mapWorkout(Workout $workout): WorkoutDTO{
         return WorkoutMapper::mapFromWorkoutToWorkoutDTO($workout);
     }
+
     /**
      * @throws GuzzleException
      */
     #[Route(path: '/home', name: 'home_page')]
     public function renderDashboard(Security $security, LoggerInterface $logger): Response{
 
-        $requirements = $this->userService->getUserDailyCalorieRequirements($this->userService->findUserByName($security->getUser()->getUserIdentifier()));
-
         $authenticatedUser = $this->userService->findUserByName($security->getUser()->getUserIdentifier());
+        $requirements = $this->userService->getUserDailyCalorieRequirements($authenticatedUser);
+        $bodyFatPercentage = $this->userService->getUserBodyFat($authenticatedUser);
+
         return $this->render(
             'test.html.twig',
             [
                 'rightContent' => 'user/home.html.twig',
                 'user' => $security->getUser(),
                 'BMR' => $requirements['data']['BMR'],
+                'bodyFatPercentage' => $bodyFatPercentage['data']['Body Fat Mass'] ?? null,
                 'workouts' => array_map([$this, 'mapWorkout'], $this->workoutService->findAllWorkoutsByUser($authenticatedUser))
             ]
         );
+    }
+
+    #[Route(path: '/update-user', name: 'update_user_page')]
+    public function renderUserUpdateProfilePage(UserPasswordHasherInterface $passwordHasher,
+                                                Security $security,
+                                                Request $request): Response
+    {
+        $authenticatedUser = $this->userService->findUserByName($security->getUser()->getUserIdentifier());
+        $userUpdatableEntity = clone($authenticatedUser);
+
+        $userUpdatableEntity->setPassword('');
+
+        $form = $this->createForm(UpdateUserType::class, $userUpdatableEntity);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if($passwordHasher->isPasswordValid($authenticatedUser, $userUpdatableEntity->getPassword())){
+                $authenticatedUser->setHip($userUpdatableEntity->getHip());
+                $authenticatedUser->setNeck($userUpdatableEntity->getNeck());
+                $authenticatedUser->setWaist($userUpdatableEntity->getWaist());
+                $authenticatedUser->setUsername($userUpdatableEntity->getUsername());
+                $authenticatedUser->setActivityLevel($userUpdatableEntity->getActivityLevel());
+                $authenticatedUser->setAge($userUpdatableEntity->getAge());
+                $this->userService->update();
+            }
+
+            return $this->redirectToRoute('home_page');
+        }
+
+        return $this->render('security/signup.html.twig', [
+            'form' => $form->createView(),
+            'title' => 'Update profile data'
+        ]);
     }
 
     #[Route(path: '/signup', name: 'signup_page')]
@@ -100,6 +138,9 @@ class UserController extends AbstractController
 
         return $this->render('security/signup.html.twig', [
             'form' => $form->createView(),
+            'title' => 'Register'
         ]);
     }
+
+
 }

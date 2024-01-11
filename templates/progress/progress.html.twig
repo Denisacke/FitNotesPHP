@@ -1,30 +1,30 @@
 {% block javascripts %}
     <script lang="js">
-        {#var exercises = {{ exercises | json_encode | raw }};#}
+        let exercises = {{ performedExercises | raw }};
 
         google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
 
-        var exerciseData = [
-            { date: '2023-01-01', reps: 10, sets: 3, weight: 50 },
-            { date: '2023-01-02', reps: 10, sets: 5, weight: 20 },
-            { date: '2023-01-05', reps: 12, sets: 4, weight: 55 },
-            // Add more workout sessions
-        ];
+        function drawExerciseChart(exerciseName) {
+            let exercisesBySelectName;
+            if(exerciseName){
+                exercisesBySelectName = exercises.filter(exercise => exercise.name === exerciseName);
+            } else {
+                exercisesBySelectName = exercises.filter(exercise => exercise.name === exercises[0].name);
+            }
 
-        function drawChart() {
+            // Example: create a basic chart with date and weight
             var data = new google.visualization.DataTable();
             data.addColumn('date', 'Date');
+            data.addColumn('number', 'Weight');
             data.addColumn('number', 'Reps');
             data.addColumn('number', 'Sets');
-            data.addColumn('number', 'Weight');
 
-            exerciseData.forEach(function(session) {
+            exercisesBySelectName.forEach(function(exercise) {
                 data.addRow([
-                    new Date(session.date),
-                    session.reps,
-                    session.sets,
-                    session.weight
+                    new Date(dayjs(new Date(exercise.performedDate.date)).format('DD-MM-YYYY')),
+                    exercise.weight,
+                    exercise.reps,
+                    exercise.sets
                 ]);
             });
 
@@ -32,16 +32,6 @@
                 title: 'Exercise Progress Over Time',
                 curveType: 'function',
                 legend: { position: 'bottom' },
-                series: {
-                    0: { targetAxisIndex: 0 }, // Reps
-                    1: { targetAxisIndex: 1 }, // Sets
-                    2: { targetAxisIndex: 2 }  // Weight
-                },
-                vAxes: {
-                    0: { title: 'Reps' },
-                    1: { title: 'Sets' },
-                    2: { title: 'Weight (lbs)' }
-                }
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
@@ -51,26 +41,48 @@
 {% endblock %}
 
 <html lang="en">
-    <div class="flex flex-col w-full">
-        <div>Here is your progress</div>
-        <div id="chart_div" style="width: 100%; height: 400px;"></div>
-        <div class="flex flex-row flex-wrap">
+<div class="workout-list p-8">
+    <label for="exerciseName" class="block text-lg font-semibold mb-2">
+        Select exercise to show progress on:
+    </label>
+    <select id="exerciseName" name="exerciseName" onclick="drawExerciseChart(this.value)" class="p-2 border border-gray-300 rounded mb-4">
+        {% for exercise in exercises %}
+            <option value="{{ exercise }}">{{ exercise }}</option>
+        {% endfor %}
+    </select>
+
+    <div class="flex flex-col">
+        <div class="text-lg font-semibold mb-2">Here is your progress</div>
+        <div id="chart_div" style="width: 100%; height: 400px;" class="mb-4"></div>
+
+        <div class="flex flex-wrap -mx-4">
             {% for workout in workouts %}
-                <div class="flex flex-col cursor-pointer border shadow">
-                    <span> {{ workout.name }}</span>
-                    <span> Date: {{ workout.performedDate|date('Y-m-d H:i:s') }}</span>
-                    <div class="flex flex-col space-y-3">
-                        {% for exercise in workout.performedExercises %}
-                            <div class="flex flex-col">
-                                <span> Name: {{ exercise.getName() }}</span>
-                                <span> Used weight: {{ exercise.getWeight() }}</span>
-                                <span> Performed reps: {{ exercise.getReps() }}</span>
-                                <span> Number of sets: {{ exercise.getSets() }}</span>
-                            </div>
-                        {% endfor %}
+                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 px-4 mb-4">
+                    <div class="bg-white p-4 border shadow">
+                        <span class="text-lg font-semibold mb-2">{{ workout.name }}</span>
+                        <span>Date: {{ workout.performedDate|date('Y-m-d H:i:s') }}</span>
+
+                        <div class="flex flex-col space-y-3">
+                            {% for exercise in workout.performedExercises %}
+                                <div class="flex flex-col">
+                                    <span>Name: {{ exercise.getName() }}</span>
+                                    <span>Used weight: {{ exercise.getWeight() }}</span>
+                                    <span>Performed reps: {{ exercise.getReps() }}</span>
+                                    <span>Number of sets: {{ exercise.getSets() }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
     </div>
+</div>
 </html>
+
+<style>
+    .workout-list {
+        max-height: calc(100vh - 20px);
+        overflow-y: scroll;
+    }
+</style>

@@ -1,20 +1,23 @@
 <html lang="en">
-    <form action="/find-exercises-bodypart" method="post">
-        <label for="bodyPart">Choose a bodypart for which to find exercises:</label>
-        <select id="bodyPart" name="bodyPart">
+<div class="min-h-screen flex items-center justify-center">
+    <form action="/find-exercises-bodypart" method="post" class="bg-gray-200 p-8 rounded shadow-md">
+        <label for="bodyPart" class="block text-lg font-semibold mb-2">Choose a body part for which to find exercises:</label>
+        <select id="bodyPart" name="bodyPart" class="p-2 border border-gray-300 rounded mb-4">
             {% for bodyPart in bodyParts %}
                 <option value="{{ bodyPart }}">{{ bodyPart }}</option>
             {% endfor %}
         </select>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
     </form>
-    <form action="/find-exercises-muscle" method="post">
-        <label for="muscle">Or go for a muscle group instead:</label>
-        <select id="muscle" name="muscle">
+
+    <form action="/find-exercises-muscle" method="post" class="bg-gray-200 p-8 rounded shadow-md ml-4">
+        <label for="muscle" class="block text-lg font-semibold mb-2">Or go for a muscle group instead:</label>
+        <select id="muscle" name="muscle" class="p-2 border border-gray-300 rounded mb-4">
             {% for muscle in muscles %}
                 <option value="{{ muscle }}">{{ muscle }}</option>
             {% endfor %}
         </select>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
     </form>
+</div>
 </html>

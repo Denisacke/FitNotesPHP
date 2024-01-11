@@ -38,4 +38,8 @@ class WorkoutService
     {
         return $this->workoutRepository->findById($id);
     }
+
+    public function deleteWorkout(int $id): void {
+        $this->workoutRepository->deleteById($id);
+    }
 }

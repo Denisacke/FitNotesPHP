@@ -47,6 +47,10 @@ class AuthenticationUserRepository extends ServiceEntityRepository implements Pa
         }
     }
 
+    public function update(){
+        $this->getEntityManager()->flush();
+    }
+
     public function findById($id): AuthenticationUser {
         return $this->getEntityManager()->getRepository(AuthenticationUser::class)->find($id);
     }

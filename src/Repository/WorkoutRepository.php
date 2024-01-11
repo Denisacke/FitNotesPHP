@@ -43,6 +43,23 @@ class WorkoutRepository extends ServiceEntityRepository
         return $this->getEntityManager()->getRepository(Workout::class)->find($id);
     }
 
+    public function deleteById($id): void {
+        $workout = $this->getEntityManager()->getRepository(Workout::class)->find($id);
+
+        if ($workout) {
+            $exercises = $workout->getExercises();
+            foreach ($exercises as $exercise) {
+                $workout->removeExercise($exercise);
+            }
+            dump('GOT HERE');
+            $this->getEntityManager()->remove($workout);
+            $this->getEntityManager()->flush();
+            echo "Record deleted successfully!";
+        } else {
+            echo "Entity not found!";
+        }
+    }
+
     /**
      * @param AuthenticationUser $user
      * @return Workout[]
