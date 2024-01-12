@@ -3,9 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\WorkoutRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: WorkoutRepository::class)]
@@ -20,8 +18,16 @@ class Workout
     #[ORM\Column]
     private string $name = '';
 
+    /**
+     * @var Collection
+     * @ManyToMany(targetEntity="Exercise::class", inversedBy="workouts")
+     * @JoinTable(name="workout_exercise",
+     *     joinColumns={@JoinColumn(name="workout_id", referencedColumnName="id", onDelete="CASCADE")},
+     *     inverseJoinColumns={@JoinColumn(name="exercise_id", referencedColumnName="id", onDelete="CASCADE")}
+     * )
+     */
     #[ORM\ManyToMany(targetEntity: Exercise::class, inversedBy: "workouts", cascade: ["persist", "remove"], fetch: "EAGER")]
-    #[ORM\JoinTable(name: "workout_exercise")]
+    #[ORM\JoinTable(name: "workout_exercise", joinColumns: ["workout_id"], inverseJoinColumns: ["exercise_id"])]
     private Collection $exercises;
 
     #[ORM\ManyToOne(targetEntity: AuthenticationUser::class)]

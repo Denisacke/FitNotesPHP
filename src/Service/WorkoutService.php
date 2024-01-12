@@ -34,6 +34,7 @@ class WorkoutService
     public function findAllWorkoutsByUser($user): array {
         return $this->workoutRepository->findAllByUser($user);
     }
+
     public function findWorkoutById(int $id): Workout
     {
         return $this->workoutRepository->findById($id);
