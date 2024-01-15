@@ -18,16 +18,9 @@ class Workout
     #[ORM\Column]
     private string $name = '';
 
-    /**
-     * @var Collection
-     * @ManyToMany(targetEntity="Exercise::class", inversedBy="workouts")
-     * @JoinTable(name="workout_exercise",
-     *     joinColumns={@JoinColumn(name="workout_id", referencedColumnName="id", onDelete="CASCADE")},
-     *     inverseJoinColumns={@JoinColumn(name="exercise_id", referencedColumnName="id", onDelete="CASCADE")}
-     * )
-     */
-    #[ORM\ManyToMany(targetEntity: Exercise::class, inversedBy: "workouts", cascade: ["persist", "remove"], fetch: "EAGER")]
-    #[ORM\JoinTable(name: "workout_exercise", joinColumns: ["workout_id"], inverseJoinColumns: ["exercise_id"])]
+
+    #[ORM\ManyToMany(targetEntity: Exercise::class, inversedBy: "workouts", cascade: ["persist"], fetch: "EAGER")]
+    #[ORM\JoinTable(name: "workout_exercise")]
     private Collection $exercises;
 
     #[ORM\ManyToOne(targetEntity: AuthenticationUser::class)]

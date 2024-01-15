@@ -1,4 +1,33 @@
 {% extends 'base.html.twig' %}
+{% block javascripts %}
+    <script lang="js">
+        let workouts = {{ performedWorkouts | raw }};
+
+        google.charts.load('current', {'packages':['corechart']});
+
+        function drawWorkoutChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', 'Date');
+
+            workouts.forEach(function(workout) {
+                data.addRow([
+                    new Date(dayjs(new Date(workout.performedDate)).format('DD-MM-YYYY')),
+                ]);
+            });
+
+            var options = {
+                title: 'Workout Progress Over Time',
+                curveType: 'function',
+                legend: { position: 'bottom' },
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+
+        window.onload = () => drawWorkoutChart()
+    </script>
+{% endblock %}
 
 {% block body %}
 
@@ -15,7 +44,6 @@
             <div class="flex flex-col w-full flex-wrap">
                 {% for exercise in workout.exercises %}
                     <div class="flex flex-col ml-3 w-full h-auto items-center justify-center border shadow">
-                        {{ exercise.getGifUrl() }}
                         <img src="{{ exercise.getGifUrl() }}" alt="Exercise GIF">
 
                         <div class="flex flex-row w-full px-2 justify-between">
@@ -48,6 +76,7 @@
                     </div>
                 {% endfor %}
             </div>
+            <div id="chart_div"></div>
         </div>
 
         <a class="bg-blue-500 w-32 text-white py-2 px-4 rounded cursor-pointer" onclick="window.history.back()">Back to Dashboard</a>

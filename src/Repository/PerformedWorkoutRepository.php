@@ -28,20 +28,20 @@ class PerformedWorkoutRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-//    /**
-//     * @return PerformedWorkout[] Returns an array of PerformedWorkout objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+
+    /**
+     * @return PerformedWorkout[] Returns an array of PerformedWorkout objects
+     */
+    public function findByWorkoutName($name): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.name = :val')
+            ->setParameter('val', $name)
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
 //    public function findOneBySomeField($value): ?PerformedWorkout
 //    {

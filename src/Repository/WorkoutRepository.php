@@ -51,10 +51,12 @@ class WorkoutRepository extends ServiceEntityRepository
             foreach ($exercises as $exercise) {
                 $workout->removeExercise($exercise);
             }
-            dump('GOT HERE');
+
+            $this->getEntityManager()->flush();
             $this->getEntityManager()->remove($workout);
             $this->getEntityManager()->flush();
-            echo "Record deleted successfully!";
+
+            dump("Record deleted successfully!");
         } else {
             echo "Entity not found!";
         }
@@ -72,21 +74,20 @@ class WorkoutRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function deleteWorkoutById($id): void
+    {
+        $queryBuilder = $this->createQueryBuilder('w')->delete('workout_exercise')
+            ->where('w.workout_id = :val')
+            ->setParameter('val', $id);
 
-//    /**
-//     * @return Workout[] Returns an array of Workout objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('w')
-//            ->andWhere('w.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('w.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+        $queryBuilder->getQuery()->execute();
+
+        $queryWorkoutBuilder = $this->createQueryBuilder('w')->delete('workout')
+            ->where('w.id = :val')
+            ->setParameter('val', $id);
+
+        $queryWorkoutBuilder->getQuery()->execute();
+    }
 
 //    public function findOneBySomeField($value): ?Workout
 //    {

@@ -7,6 +7,7 @@ use App\Entity\Exercise;
 use App\Entity\Workout;
 use App\Repository\AuthenticationUserRepository;
 use App\Repository\ExerciseRepository;
+use App\Repository\PerformedWorkoutRepository;
 use App\Service\WorkoutService;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
@@ -25,20 +26,21 @@ class WorkoutController extends AbstractController
         "levator scapulae", "pectorals", "quads", "serratus anterior", "spine", "traps", "triceps", "upper back"];
     private Client $client;
     private WorkoutService $workoutService;
-    private ExerciseRepository $exerciseRepository;
+
+    private PerformedWorkoutRepository $performedWorkoutRepository;
 
     private AuthenticationUserRepository $authenticationUserRepository;
 
     public function __construct(WorkoutService $workoutService,
-                                ExerciseRepository $exerciseRepository,
+                                PerformedWorkoutRepository $performedWorkoutRepository,
                                 AuthenticationUserRepository $authenticationUserRepository)
     {
         $this->client = new Client([
             'verify' => false
         ]);
         $this->workoutService = $workoutService;
-        $this->exerciseRepository = $exerciseRepository;
         $this->authenticationUserRepository = $authenticationUserRepository;
+        $this->performedWorkoutRepository = $performedWorkoutRepository;
     }
 
     #[Route(path: '/workout', name: 'workout_page')]
@@ -122,9 +124,12 @@ class WorkoutController extends AbstractController
     #[Route(path: '/workout-details/{id}', name: 'workout_details')]
     public function renderWorkoutDetails(int $id): Response{
 
+        $workout = $this->workoutService->findWorkoutById($id);
+
         return $this->render('test.html.twig', [
             'rightContent' => 'workout/workout_details.html.twig',
-            'workout' => $this->workoutService->findWorkoutById($id)
+            'workout' => $workout,
+            'performedWorkouts' => json_encode($this->performedWorkoutRepository->findByWorkoutName($workout->getName()))
         ]);
     }
     #[Route(path: '/save-workout', name: 'save_workout', methods: "POST", format: "json")]
