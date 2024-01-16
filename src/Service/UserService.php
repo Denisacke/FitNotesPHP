@@ -47,7 +47,7 @@ class UserService
     public function getUserDailyCalorieRequirements(AuthenticationUser $user): array{
         $response = $this->client->request('GET',
             'https://fitness-calculator.p.rapidapi.com/dailycalorie?age=' . $user->getAge() .
-            '&gender=' . $user->getGender() .
+            '&gender=' . strtolower($user->getGender()) .
             '&height=' . $user->getHeight() .
             '&weight=' . $user->getWeight() .
             '&activitylevel=level_' . $user->getActivityLevel(), [
@@ -65,7 +65,7 @@ class UserService
      */
     public function getUserIdealWeight(AuthenticationUser $user): array{
         $response = $this->client->request('GET',
-            'https://fitness-calculator.p.rapidapi.com/idealweight?gender=' . $user->getGender() .
+            'https://fitness-calculator.p.rapidapi.com/idealweight?gender=' . strtolower($user->getGender()) .
             '&height=' . $user->getHeight(),
             [
             'headers' => [
@@ -81,7 +81,7 @@ class UserService
         try{
             $response = $this->client->request('GET',
                 'https://fitness-calculator.p.rapidapi.com/bodyfat?age=' . $user->getAge() .
-                '&gender=' . $user->getGender() .
+                '&gender=' . strtolower($user->getGender()) .
                 '&height=' . $user->getHeight() .
                 '&weight=' . $user->getWeight() .
                 '&neck=' . $user->getNeck() .

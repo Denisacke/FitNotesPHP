@@ -35,6 +35,11 @@
             </div>
 
             <div class="flex flex-col">
+                {{ form_label(form.gender, 'Gender', {'label_attr': {'class': 'mb-1 text-sm'}}) }}
+                {{ form_widget(form.gender, {'attr': {'class': 'p-2 border border-gray-300 rounded'}}) }}
+            </div>
+
+            <div class="flex flex-col">
                 {{ form_label(form.neck, 'Neck (optional)', {'label_attr': {'class': 'mb-1 text-sm'}}) }}
                 {{ form_widget(form.neck, {'attr': {'class': 'p-2 border border-gray-300 rounded'}}) }}
             </div>
@@ -54,12 +59,12 @@
                 {{ form_widget(form.activityLevel, {'attr': {'class': 'p-2 border border-gray-300 rounded'}}) }}
                 {{ form_errors(form.activityLevel) }}
 
-                <div class="absolute right-0 top-0 mt-2 mr-2 cursor-pointer">
-                    <span class="text-blue-500" onclick="showActivityLevelInfo()">ℹ️</span>
+                <div>
+                    <span class="cursor-pointer text-blue-500" onclick="showActivityLevelInfo()">ℹ️</span>
                 </div>
 
                 <!-- Tooltip for information -->
-                <div id="activityLevelInfo" class="hidden absolute top-0 right-0 p-2 bg-white border border-gray-300 rounded">
+                <div id="activityLevelInfo" class="hidden p-2 bg-white border border-gray-300 rounded">
                     <p class="text-sm">
                         1 - Very sedentary (0-1 hours of workouts per week)<br>
                         2 - Sedentary (1-2 hours per week)<br>
@@ -79,7 +84,6 @@
 
 {% block javascripts %}
 <script>
-    // JavaScript function to toggle the visibility of the information tooltip
     function showActivityLevelInfo() {
         const infoTooltip = document.getElementById('activityLevelInfo');
         infoTooltip.classList.toggle('hidden');

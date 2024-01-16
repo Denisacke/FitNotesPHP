@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\AuthenticationUser;
-use App\Entity\DTO\UserPasswordCheckDTO;
 use App\Entity\DTO\WorkoutDTO;
 use App\Entity\DTO\WorkoutMapper;
 use App\Entity\Workout;
@@ -109,6 +108,7 @@ class UserController extends AbstractController
                 $authenticatedUser->setUsername($userUpdatableEntity->getUsername());
                 $authenticatedUser->setActivityLevel($userUpdatableEntity->getActivityLevel());
                 $authenticatedUser->setAge($userUpdatableEntity->getAge());
+                $authenticatedUser->setGender($userUpdatableEntity->getGender());
                 $this->userService->update();
             }
 

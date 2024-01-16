@@ -4,11 +4,13 @@ namespace App\Form;
 
 use App\Entity\AuthenticationUser;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\Range;
 
 class UpdateUserType extends AbstractType
@@ -23,9 +25,27 @@ class UpdateUserType extends AbstractType
             ->add('height')
             ->add('weight')
             ->add('age')
-            ->add('neck')
-            ->add('waist')
-            ->add('hip')
+            ->add('gender', ChoiceType::class, [
+                'choices' => [
+                    'Male' => 'Male',
+                    'Female' => 'Female',
+                ],
+                'constraints' => [
+                    new Choice([
+                        'choices' => ['Male', 'Female'],
+                        'message' => 'Choose a valid gender.',
+                    ]),
+                ],
+            ])
+            ->add('neck', IntegerType::class, [
+                'required' => false,
+            ])
+            ->add('waist', IntegerType::class, [
+                'required' => false,
+            ])
+            ->add('hip', IntegerType::class, [
+                'required' => false,
+            ])
             ->add('activityLevel', IntegerType::class, [
                 'constraints' => [
                     new Range([

@@ -1,8 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block javascripts %}
     <script lang="js">
-        let workouts = {{ performedWorkouts | raw }};
-
+        let workouts = {{ performedWorkouts }};
         google.charts.load('current', {'packages':['corechart']});
 
         function drawWorkoutChart() {
@@ -18,7 +17,6 @@
             var options = {
                 title: 'Workout Progress Over Time',
                 curveType: 'function',
-                legend: { position: 'bottom' },
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('chart_div'));

@@ -21,20 +21,19 @@ class PerformedExerciseRepository extends ServiceEntityRepository
         parent::__construct($registry, PerformedExercise::class);
     }
 
-//    /**
-//     * @return PerformedExercises[] Returns an array of PerformedExercises objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return PerformedExercise[] Returns an array of PerformedExercises objects
+     */
+    public function findByUserId($id): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.user = :val')
+            ->setParameter('val', $id)
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
 //    public function findOneBySomeField($value): ?PerformedExercises
 //    {
