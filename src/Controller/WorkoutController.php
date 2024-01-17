@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\DTO\BodyPartExerciseDTO;
+use App\Entity\DTO\WorkoutMapper;
 use App\Entity\Exercise;
 use App\Entity\Workout;
 use App\Repository\AuthenticationUserRepository;
@@ -129,7 +130,9 @@ class WorkoutController extends AbstractController
         return $this->render('test.html.twig', [
             'rightContent' => 'workout/workout_details.html.twig',
             'workout' => $workout,
-            'performedWorkouts' => json_encode($this->performedWorkoutRepository->findByWorkoutName($workout->getName()))
+            'performedWorkouts' => array_map(function($workout) {
+                return WorkoutMapper::mapFromPerformedWorkoutToPerformedWorkoutDTO($workout);
+            }, $this->performedWorkoutRepository->findByWorkoutName($workout->getName()))
         ]);
     }
     #[Route(path: '/save-workout', name: 'save_workout', methods: "POST", format: "json")]

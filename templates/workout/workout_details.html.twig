@@ -1,31 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block javascripts %}
-    <script lang="js">
-        let workouts = {{ performedWorkouts }};
-        google.charts.load('current', {'packages':['corechart']});
 
-        function drawWorkoutChart() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('date', 'Date');
-
-            workouts.forEach(function(workout) {
-                data.addRow([
-                    new Date(dayjs(new Date(workout.performedDate)).format('DD-MM-YYYY')),
-                ]);
-            });
-
-            var options = {
-                title: 'Workout Progress Over Time',
-                curveType: 'function',
-            };
-
-            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-            chart.draw(data, options);
-        }
-
-        window.onload = () => drawWorkoutChart()
-    </script>
-{% endblock %}
 
 {% block body %}
 
@@ -74,7 +48,12 @@
                     </div>
                 {% endfor %}
             </div>
-            <div id="chart_div"></div>
+            <h3 class="text-xl font-semibold mb-2">Dates when performed:</h3>
+            <ul>
+                {% for performedWorkout in performedWorkouts %}
+                    <li> {{ performedWorkout.performedDate | date('Y-m-d H:i:s') }}</li>
+                {% endfor %}
+            </ul>
         </div>
 
         <a class="bg-blue-500 w-32 text-white py-2 px-4 rounded cursor-pointer" onclick="window.history.back()">Back to Dashboard</a>

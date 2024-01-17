@@ -1,26 +1,54 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     <div class="min-h-screen flex items-center justify-center">
-        {{ form_start(form, {'attr': {'class': 'bg-gray-200 p-8 rounded shadow-md w-96'}}) }}
+        <div class="bg-gray-200 p-8 rounded shadow-md w-96">
+            <h1 class="text-2xl font-semibold mb-6 text-center">Create Performed Workout</h1>
 
-        <div class="mb-4">
-            <label for="{{ form.name.vars.id }}" class="block text-sm font-medium text-gray-600">Name</label>
-            <div class="mt-1">
-                {{ form_widget(form.name, {'attr': {'class': 'p-2 border border-gray-300 rounded w-full'}}) }}
+            {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+
+            <div class="flex flex-col">
+                <label for="{{ form.name.vars.id }}" class="mb-1 text-sm">Name</label>
+                {{ form_widget(form.name, {'attr': {'class': 'p-2 border border-gray-300 rounded'}}) }}
             </div>
-        </div>
 
-        <div class="mb-4">
-            <label for="{{ form.performedDate.vars.id }}" class="block text-sm font-medium text-gray-600">Performed Date</label>
-            <div class="mt-1">
-                {{ form_widget(form.performedDate, {'attr': {'class': 'p-2 border border-gray-300 rounded w-full'}}) }}
+            <div class="flex flex-col">
+                <label for="{{ form.performedDate.vars.id }}" class="mb-1 text-sm">Performed Date</label>
+                {{ form_widget(form.performedDate, {'attr': {'class': 'p-2 border border-gray-300 rounded'}}) }}
             </div>
-        </div>
 
-        <div class="flex items-center justify-center mt-4">
-            <button type="submit" style="background-color: #3b82f6" class="text-white py-2 px-4 rounded">Submit</button>
-        </div>
+            <div class="flex flex-col space-y-4">
+                <label class="mb-1 text-sm font-semibold">Exercises</label>
 
-        {{ form_end(form) }}
+                {# Iterate over each exercise in the collection #}
+                {% for exerciseForm in form.exercises %}
+                    <div class="space-y-2">
+                        {{ form_errors(exerciseForm) }}
+                        <div class="flex flex-col">
+                            <label class="mb-1 text-sm font-bold">Exercise Name</label>
+                            {{ form_widget(exerciseForm.name, {'attr': {'class': 'p-2 border border-gray-300 rounded'}}) }}
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="mb-1 text-sm">Reps</label>
+                            {{ form_widget(exerciseForm.reps, {'attr': {'class': 'p-2 border border-gray-300 rounded'}}) }}
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="mb-1 text-sm">Sets</label>
+                            {{ form_widget(exerciseForm.sets, {'attr': {'class': 'p-2 border border-gray-300 rounded'}}) }}
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="mb-1 text-sm">Weight</label>
+                            {{ form_widget(exerciseForm.weight, {'attr': {'class': 'p-2 border border-gray-300 rounded'}}) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Create Workout</button>
+
+            {{ form_end(form) }}
+        </div>
     </div>
 {% endblock %}

@@ -55,8 +55,6 @@ class WorkoutRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
             $this->getEntityManager()->remove($workout);
             $this->getEntityManager()->flush();
-
-            dump("Record deleted successfully!");
         } else {
             echo "Entity not found!";
         }

@@ -10,7 +10,6 @@ use App\Form\PerformedWorkoutType;
 use App\Repository\ExerciseRepository;
 use App\Repository\PerformedWorkoutRepository;
 use App\Service\UserService;
-use App\Service\WorkoutService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Psr\Log\LoggerInterface;
@@ -23,21 +22,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class PerformedWorkoutController extends AbstractController
 {
     private UserService $userService;
-    private WorkoutService $workoutService;
     private ExerciseRepository $exerciseRepository;
 
     private PerformedWorkoutRepository $performedWorkoutRepository;
 
     /**
      * @param UserService $userService
-     * @param WorkoutService $workoutService
      * @param ExerciseRepository $exerciseRepository
      * @param PerformedWorkoutRepository $performedWorkoutRepository
      */
-    public function __construct(UserService $userService, WorkoutService $workoutService, ExerciseRepository $exerciseRepository, PerformedWorkoutRepository $performedWorkoutRepository)
+    public function __construct(UserService $userService, ExerciseRepository $exerciseRepository, PerformedWorkoutRepository $performedWorkoutRepository)
     {
         $this->userService = $userService;
-        $this->workoutService = $workoutService;
         $this->exerciseRepository = $exerciseRepository;
         $this->performedWorkoutRepository = $performedWorkoutRepository;
     }
@@ -61,7 +57,6 @@ class PerformedWorkoutController extends AbstractController
     {
         $workout = json_decode($request->request->get('workout'), true);
         $performedWorkout = new PerformedWorkoutDTO();
-        $logger->info('got here!!!!!');
         if(isset($workout)){
             $performedWorkout->setName($workout['name']);
 

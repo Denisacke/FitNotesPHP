@@ -40,4 +40,17 @@ class WorkoutMapper
 
         return $performedWorkout;
     }
+
+    public static function mapFromPerformedWorkoutToPerformedWorkoutDTO(PerformedWorkout $performedWorkout): PerformedWorkoutDTO
+    {
+        $performedWorkoutDTO = new PerformedWorkoutDTO();
+
+        $performedWorkoutDTO->setName($performedWorkout->getName());
+        $performedWorkoutDTO->setExercises(array_map(function ($performedExercise) {
+           return ExerciseMapper::mapFromPerformedExerciseToPerformedExerciseDTO($performedExercise);
+        }, $performedWorkout->getPerformedExercises()->toArray()));
+        $performedWorkoutDTO->setPerformedDate($performedWorkout->getPerformedDate());
+
+        return $performedWorkoutDTO;
+    }
 }
