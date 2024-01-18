@@ -74,7 +74,7 @@ class UserController extends AbstractController
         $authenticatedUser = $this->userService->findUserByName($security->getUser()->getUserIdentifier());
         $requirements = $this->userService->getUserDailyCalorieRequirements($authenticatedUser);
         $bodyFatPercentage = $this->userService->getUserBodyFat($authenticatedUser);
-
+        $workouts = array_map([$this, 'mapWorkout'], $this->workoutService->findAllWorkoutsByUser($authenticatedUser));
         return $this->render(
             'test.html.twig',
             [
@@ -82,7 +82,8 @@ class UserController extends AbstractController
                 'user' => $security->getUser(),
                 'BMR' => $requirements['data']['BMR'],
                 'bodyFatPercentage' => $bodyFatPercentage['data']['Body Fat Mass'] ?? null,
-                'workouts' => array_map([$this, 'mapWorkout'], $this->workoutService->findAllWorkoutsByUser($authenticatedUser))
+                'workouts' => $workouts,
+                'workoutsComputationArray' => json_encode($workouts)
             ]
         );
     }

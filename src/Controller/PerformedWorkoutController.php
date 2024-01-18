@@ -52,10 +52,10 @@ class PerformedWorkoutController extends AbstractController
      */
     #[Route("/create-performed-workout", name: "create_performed_workout")]
     public function createWorkout(Request $request,
-                                  Security $security,
-                                  LoggerInterface $logger): Response
+                                  Security $security): Response
     {
         $workout = json_decode($request->request->get('workout'), true);
+
         $performedWorkout = new PerformedWorkoutDTO();
         if(isset($workout)){
             $performedWorkout->setName($workout['name']);

@@ -4,10 +4,10 @@ namespace App\Entity\DTO;
 
 class WorkoutDTO
 {
-    private int $id;
-    private string $name;
+    public int $id;
+    public string $name;
 
-    private array $exercises;
+    public array $exercises;
 
     public function __construct()
     {

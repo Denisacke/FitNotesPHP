@@ -4,21 +4,21 @@ namespace App\Entity\DTO;
 
 class BodyPartExerciseDTO
 {
-    private int $id;
+    public int $id;
 
-    private string $bodyPart;
+    public string $bodyPart;
 
-    private string $equipment;
+    public string $equipment;
 
-    private string $gifUrl;
+    public string $gifUrl;
 
-    private string $name;
+    public string $name;
 
-    private string $target;
+    public string $target;
 
-    private array $secondaryMuscles;
+    public array $secondaryMuscles;
 
-    private array $instructions;
+    public array $instructions;
 
     /**
      * @return string
