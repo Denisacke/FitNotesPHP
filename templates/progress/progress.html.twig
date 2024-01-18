@@ -19,9 +19,8 @@
             data.addColumn('number', 'Sets');
 
             exercisesBySelectName.forEach(function(exercise) {
-                console.log(exercise);
                 data.addRow([
-                    new Date(dayjs(new Date(exercise.performedDate.date)).format('DD-MM-YYYY')),
+                    new Date(dayjs(new Date(exercise.performedDate.date)).format('YYYY-MM-DD')),
                     exercise.weight,
                     exercise.reps,
                     exercise.sets
